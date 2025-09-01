@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -26,12 +27,17 @@
     }
 
     body {
+      margin: 0; 
       font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
       background-color: var(--bg-light);
       line-height: 1.7;
       color: var(--text-dark);
       overflow-x: hidden;
     }
+    .hero-section {
+  margin-top: 0; /* ensure no spacing under navbar */
+  padding-top: 0;
+}
 
     /* Enhanced Navbar */
     .navbar {
@@ -721,58 +727,167 @@
   </div>
 </section>
 
-<!-- Enhanced Portfolio -->
-<section id="portfolio" class="animate-fade-up">
-  <div class="container">
-    <h2 class="section-title">포트폴리오</h2>
-    <div class="row g-4" id="portfolioGrid">
-      <div class="col-lg-4 col-md-6">
-        <div class="portfolio-card">
-          <div class="portfolio-image-container">
-            <img src="./images/IMG_4242.JPG" alt="안산 주택 태양광 설치" loading="lazy">
-            <div class="portfolio-overlay">
-              <i class="bi bi-zoom-in"></i>
-            </div>
-          </div>
-          <div class="portfolio-info">
-            <h5>안산 주택용 태양광</h5>
-            <p class="text-muted">주택 옥상 고효율 태양광 시스템 구축 (2024)</p>
-          </div>
-        </div>
+<!-- Portfolio -->
+<section id="portfolio" class="container animate">
+  <h2 class="text-center mb-4">포트폴리오</h2>
+  <div class="row g-4" id="portfolioGrid">
+    <div class="col-md-4 portfolio-card">
+      <img src="./images/IMG_4242.JPG" alt="Portfolio 1">
+      <h5>주택용 설치</h5>
+      <p class="text-muted">안산 주택 옥상 태양광 시스템 구축 (2024)</p>
+    </div>
+    <div class="col-md-4 portfolio-card">
+      <img src="./images/IMG_4248.JPG" alt="Portfolio 2">
+      <h5>상업용 설치</h5>
+      <p class="text-muted">인천 공장 지붕 대규모 태양광 설치 (2024)</p>
+    </div>
+    <div class="col-md-4 portfolio-card">
+      <img src="./images/IMG_4262.JPG" alt="Portfolio 3">
+      <h5>유지보수</h5>
+      <p class="text-muted">수원 태양광 시스템 점검 및 성능 최적화 (2025)</p>
+    </div>
+  </div>
+
+  <div id="moreProjects" class="collapse-container mt-4">
+    <div class="row g-4">
+      <div class="col-md-4 portfolio-card">
+        <img src="./images/IMG_4252.JPG" alt="Portfolio 4">
+        <h5>산업용 프로젝트</h5>
+        <p class="text-muted">대규모 산업단지 태양광 발전소 구축 (2025)</p>
       </div>
-      <div class="col-lg-4 col-md-6">
-        <div class="portfolio-card">
-          <div class="portfolio-image-container">
-            <img src="./images/IMG_4248.JPG" alt="인천 공장 태양광 설치" loading="lazy">
-            <div class="portfolio-overlay">
-              <i class="bi bi-zoom-in"></i>
-            </div>
-          </div>
-          <div class="portfolio-info">
-            <h5>인천 공장 대규모 설치</h5>
-            <p class="text-muted">공장 지붕 대규모 태양광 발전소 구축 (2024)</p>
-          </div>
-        </div>
+      <div class="col-md-4 portfolio-card">
+        <img src="./images/IMG_4261.JPG" alt="Portfolio 5">
+        <h5>주택 리모델링</h5>
+        <p class="text-muted">가정 리모델링 프로젝트와 연계한 태양광 설치</p>
       </div>
-      <div class="col-lg-4 col-md-6">
-        <div class="portfolio-card">
-          <div class="portfolio-image-container">
-            <img src="./images/IMG_4262.JPG" alt="수원 태양광 유지보수" loading="lazy">
-            <div class="portfolio-overlay">
-              <i class="bi bi-zoom-in"></i>
-            </div>
-          </div>
-          <div class="portfolio-info">
-            <h5>수원 시스템 최적화</h5>
-            <p class="text-muted">태양광 시스템 점검 및 성능 최적화 (2025)</p>
-          </div>
-        </div>
+      <div class="col-md-4 portfolio-card">
+        <img src="./images/IMG_4279.JPG" alt="Portfolio 6">
+        <h5>상업 유지보수</h5>
+        <p class="text-muted">기업 태양광 패널 정기 점검 및 유지보수</p>
+      </div>
+      <div class="col-md-4 portfolio-card">
+        <img src="./images/IMG_4281.JPG" alt="Portfolio 7">
+        <h5>교육기관 프로젝트</h5>
+        <p class="text-muted">학교 옥상 친환경 태양광 시스템 설치</p>
+      </div>
+      <div class="col-md-4 portfolio-card">
+        <img src="./images/IMG_4283.JPG" alt="Portfolio 8">
+        <h5>공공기관 프로젝트</h5>
+        <p class="text-muted">공공시설 태양광 발전 시스템 구축</p>
       </div>
     </div>
+  </div>
 
-    <div id="moreProjects" class="collapse-container">
-      <div class="row g-4 mt-2">
-        <div class="col-lg-4 col-md-6">
-          <div class="portfolio-card">
-            <div class="portfolio-image-container">
-              <img src="./images/IMG_4252.JPG" alt="산업단지 태양광
+  <div class="text-center mt-5">
+    <button id="togglePortfolio" class="btn btn-custom">
+      <span id="toggleIcon">▼</span> 더 많은 프로젝트 보기
+    </button>
+  </div>
+</section>
+
+<!-- Professional Contact Section -->
+<section id="contact" class="animate">
+  <div class="container">
+    <h2 class="text-center mb-5">문의하기</h2>
+    <div class="contact-card">
+      
+      <div class="contact-info-grid">
+        
+        <div class="contact-item">
+          <div class="contact-icon">
+            <i class="bi bi-telephone-fill"></i>
+          </div>
+          <div class="contact-details">
+            <h6>대표번호</h6>
+            <p>1688-7805</p>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon">
+            <i class="bi bi-phone-fill"></i>
+          </div>
+          <div class="contact-details">
+            <h6>휴대폰</h6>
+            <p>010-8389-357</p>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon">
+            <i class="bi bi-printer-fill"></i>
+          </div>
+          <div class="contact-details">
+            <h6>팩스</h6>
+            <p>02-6499-7805</p>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon">
+            <i class="bi bi-geo-alt-fill"></i>
+          </div>
+          <div class="contact-details">
+            <h6>본사 주소</h6>
+            <p>경기도 양주시 광사로 131-127</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="contact-cta">
+        <h5>태양광 설치 상담을 원하시나요?</h5>
+        <div class="cta-buttons">
+          <a href="tel:1688-7805" class="btn btn-custom">
+            <i class="bi bi-telephone-fill"></i> 전화 상담
+          </a>
+          <a href="#" class="btn btn-custom">
+            <i class="bi bi-envelope-fill"></i> 이메일 문의
+          </a>
+          <a href="#" class="btn btn-custom">
+            <i class="bi bi-calendar-check"></i> 방문 상담 예약
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <p>&copy; 2025 현대 에너지. All rights reserved. | 태양광 전문 기업</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const toggleBtn = document.getElementById("togglePortfolio");
+  const moreProjects = document.getElementById("moreProjects");
+
+  toggleBtn.addEventListener("click", function() {
+    moreProjects.classList.toggle("show");
+    if (moreProjects.classList.contains("show")) {
+      toggleBtn.innerHTML = '<span id="toggleIcon">▲</span> 프로젝트 접기';
+    } else {
+      toggleBtn.innerHTML = '<span id="toggleIcon">▼</span> 더 많은 프로젝트 보기';
+    }
+  });
+
+  // Smooth scrolling for navigation links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
+  });
+</script>
+</body>
+</html>
