@@ -7,68 +7,150 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f8f9fa;
-      line-height: 1.6;
+    :root {
+      --primary-color: #004369;
+      --secondary-color: #0056b3;
+      --accent-color: #28a745;
+      --text-dark: #2c3e50;
+      --text-light: #6c757d;
+      --bg-light: #f8f9fa;
+      --shadow-light: 0 2px 15px rgba(0,0,0,0.08);
+      --shadow-medium: 0 4px 25px rgba(0,0,0,0.12);
+      --shadow-heavy: 0 8px 35px rgba(0,0,0,0.15);
+      --border-radius: 12px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* Navbar */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+      background-color: var(--bg-light);
+      line-height: 1.7;
+      color: var(--text-dark);
+      overflow-x: hidden;
+    }
+
+    /* Enhanced Navbar */
     .navbar {
-      background: linear-gradient(135deg, #004369, #0056b3);
-      padding: 1rem 2rem;
-      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      padding: 0.75rem 0;
+      box-shadow: var(--shadow-medium);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
+
     .navbar-brand {
-      font-weight: 700;
-      font-size: 1.6rem;
+      font-weight: 800;
+      font-size: clamp(1.3rem, 4vw, 1.8rem);
       color: white !important;
+      letter-spacing: -0.5px;
     }
+
     .navbar-nav .nav-link {
       color: rgba(255,255,255,0.9) !important;
-      font-weight: 500;
-      margin: 0 0.8rem;
-      padding: 0.5rem 1rem !important;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin: 0 0.3rem;
+      padding: 0.6rem 1.2rem !important;
       border-radius: 25px;
-      transition: all 0.3s ease;
+      transition: var(--transition);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+      white-space: nowrap;
     }
+
     .navbar-nav .nav-link:hover {
       color: white !important;
-      background: rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.2);
       transform: translateY(-1px);
     }
 
-    /* Banner */
-    header img {
-      height: 520px;
-      object-fit: cover;
-      width: 100%;
-      filter: brightness(0.95);
-    }
-    .carousel {
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    .navbar-toggler {
+      border: none;
+      padding: 4px 8px;
     }
 
-    /* Company intro */
-    #about {
-      padding: 80px 0;
-      background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    .navbar-toggler:focus {
+      box-shadow: none;
     }
-    #about h2 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: #004369;
+
+    /* Enhanced Banner */
+    .hero-section {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .carousel-item img {
+      height: clamp(300px, 60vw, 600px);
+      object-fit: cover;
+      width: 100%;
+      filter: brightness(0.9) contrast(1.1);
+    }
+
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, rgba(0,67,105,0.7), rgba(0,86,179,0.5));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+
+    .hero-content {
+      text-align: center;
+      color: white;
+      max-width: 800px;
+      padding: 2rem;
+    }
+
+    .hero-content h1 {
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-weight: 800;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .hero-content p {
+      font-size: clamp(1rem, 3vw, 1.3rem);
+      margin-bottom: 2rem;
+      opacity: 0.95;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+      width: 8%;
+      opacity: 0.7;
+    }
+
+    /* Section Styling */
+    section {
+      padding: clamp(3rem, 8vw, 5rem) 0;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      font-weight: 800;
+      color: var(--primary-color);
       margin-bottom: 3rem;
       position: relative;
+      text-align: center;
     }
-    #about h2::after {
+
+    .section-title::after {
       content: '';
       width: 80px;
       height: 4px;
-      background: linear-gradient(90deg, #004369, #0056b3);
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
       position: absolute;
       bottom: -15px;
       left: 50%;
@@ -76,354 +158,438 @@
       border-radius: 2px;
     }
 
-    /* Sections padding */
-    section {
-      padding: 60px 0;
-    }
-    section h2 {
-      font-size: 2.3rem;
-      font-weight: 700;
-      color: #004369;
-      margin-bottom: 3rem;
-      position: relative;
-    }
-    section h2::after {
-      content: '';
-      width: 60px;
-      height: 3px;
-      background: linear-gradient(90deg, #004369, #0056b3);
-      position: absolute;
-      bottom: -12px;
-      left: 50%;
-      transform: translateX(-50%);
-      border-radius: 2px;
+    /* Enhanced Company Intro */
+    #about {
+      background: linear-gradient(135deg, #ffffff, var(--bg-light));
     }
 
-    /* Portfolio adjustments */
-    .portfolio-card {
-      transition: all 0.3s ease;
+    .company-intro-card {
+      background: white;
+      border-radius: 20px;
+      padding: clamp(2rem, 5vw, 3rem);
+      box-shadow: var(--shadow-light);
+      border: 1px solid rgba(0,67,105,0.1);
+      position: relative;
+      overflow: hidden;
     }
+
+    .company-intro-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .company-intro-card .lead {
+      font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+      line-height: 1.8;
+      color: var(--text-dark);
+      margin: 0;
+    }
+
+    /* Enhanced Service Cards */
+    .service-card {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: clamp(1.5rem, 4vw, 2.5rem);
+      box-shadow: var(--shadow-light);
+      transition: var(--transition);
+      text-align: center;
+      border: 1px solid rgba(0,67,105,0.08);
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      transform: scaleX(0);
+      transition: var(--transition);
+    }
+
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-heavy);
+    }
+
+    .service-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .service-icon {
+      font-size: clamp(2.5rem, 6vw, 3.2rem);
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+      display: inline-block;
+      padding: clamp(15px, 3vw, 20px);
+      background: linear-gradient(135deg, rgba(0,67,105,0.1), rgba(0,86,179,0.1));
+      border-radius: 50%;
+      transition: var(--transition);
+    }
+
+    .service-card:hover .service-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .service-card h5 {
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    }
+
+    .service-card p {
+      color: var(--text-light);
+      font-size: clamp(0.9rem, 2vw, 1rem);
+      line-height: 1.6;
+    }
+
+    /* Enhanced Portfolio */
+    .portfolio-card {
+      transition: var(--transition);
+      margin-bottom: 2rem;
+    }
+
     .portfolio-card:hover {
       transform: translateY(-5px);
     }
+
+    .portfolio-image-container {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--border-radius);
+      margin-bottom: 1rem;
+    }
+
     .portfolio-card img {
-      border-radius: 15px;
-      transition: all 0.3s ease;
-      object-fit: cover;
       width: 100%;
-      height: 280px;
-      margin-bottom: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-    .portfolio-card img:hover {
-      transform: scale(1.02);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-    }
-    .portfolio-card h5 {
-      margin-top: 15px;
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: #004369;
-    }
-    .portfolio-card p {
-      font-size: 0.95rem;
-      color: #666;
-      margin-bottom: 15px;
+      height: clamp(200px, 40vw, 280px);
+      object-fit: cover;
+      transition: var(--transition);
+      border-radius: var(--border-radius);
     }
 
-    .btn-custom {
-      background: linear-gradient(135deg, #004369, #0056b3);
-      color: white;
-      border: none;
-      padding: 12px 30px;
-      border-radius: 25px;
-      font-weight: 600;
-      display: inline-flex;
+    .portfolio-card:hover img {
+      transform: scale(1.05);
+    }
+
+    .portfolio-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, rgba(0,67,105,0.8), rgba(0,86,179,0.6));
+      display: flex;
       align-items: center;
-      gap: 8px;
-      transition: all 0.3s ease;
+      justify-content: center;
+      opacity: 0;
+      transition: var(--transition);
+      border-radius: var(--border-radius);
     }
-    .btn-custom:hover {
-      background: linear-gradient(135deg, #022b44, #003d82);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+
+    .portfolio-card:hover .portfolio-overlay {
+      opacity: 1;
+    }
+
+    .portfolio-overlay i {
       color: white;
+      font-size: 2rem;
     }
 
-    /* Service cards */
-    .service-card {
-      background: white;
-      border-radius: 20px;
-      padding: 35px 25px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-      transition: all 0.3s ease;
-      text-align: center;
-      border: 1px solid rgba(0,0,0,0.05);
-      height: 100%;
-    }
-    .service-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.12);
-      border-color: rgba(0,67,105,0.1);
-    }
-    .service-icon {
-      font-size: 2.8rem;
-      color: #004369;
-      margin-bottom: 20px;
-      display: inline-block;
-      padding: 20px;
-      background: linear-gradient(135deg, rgba(0,67,105,0.1), rgba(0,86,179,0.1));
-      border-radius: 50%;
-    }
-    .service-card h5 {
-      font-weight: 600;
-      color: #004369;
-      margin-bottom: 15px;
-      font-size: 1.3rem;
-    }
-    .service-card p {
-      color: #666;
-      font-size: 1rem;
+    .portfolio-info h5 {
+      font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
     }
 
-    /* Professional Contact Section */
+    .portfolio-info p {
+      color: var(--text-light);
+      font-size: clamp(0.85rem, 2vw, 0.95rem);
+      margin-bottom: 0;
+    }
+
+    /* Enhanced Contact Section */
     #contact {
-      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-      padding: 60px 0;
+      background: linear-gradient(135deg, var(--bg-light), #e9ecef);
     }
+
     .contact-card {
       background: white;
       border-radius: 20px;
-      padding: 35px 25px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      border: 1px solid rgba(0,0,0,0.05);
-      max-width: 800px;
+      padding: clamp(2rem, 5vw, 2.5rem);
+      box-shadow: var(--shadow-medium);
+      border: 1px solid rgba(0,67,105,0.1);
+      max-width: 900px;
       margin: 0 auto;
-      transition: all 0.3s ease;
-    }
-    .contact-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+      position: relative;
+      overflow: hidden;
     }
 
-    .contact-info-grid {
+    .contact-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .contact-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      margin-bottom: 25px;
+      gap: clamp(1rem, 3vw, 1.5rem);
+      margin-bottom: 2rem;
     }
 
     .contact-item {
       display: flex;
       align-items: center;
-      padding: 15px;
+      padding: clamp(1rem, 3vw, 1.2rem);
       background: linear-gradient(135deg, rgba(0,67,105,0.05), rgba(0,86,179,0.05));
-      border-radius: 12px;
-      border-left: 3px solid #004369;
-      transition: all 0.3s ease;
+      border-radius: var(--border-radius);
+      border-left: 3px solid var(--primary-color);
+      transition: var(--transition);
     }
+
     .contact-item:hover {
       background: linear-gradient(135deg, rgba(0,67,105,0.1), rgba(0,86,179,0.1));
       transform: translateX(3px);
     }
 
     .contact-icon {
-      font-size: 1.5rem;
-      color: #004369;
+      font-size: clamp(1.2rem, 3vw, 1.4rem);
+      color: var(--primary-color);
       background: white;
-      padding: 12px;
+      padding: clamp(8px, 2vw, 12px);
       border-radius: 50%;
-      margin-right: 15px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-      min-width: 45px;
-      text-align: center;
+      margin-right: clamp(10px, 3vw, 15px);
+      box-shadow: var(--shadow-light);
+      min-width: clamp(35px, 8vw, 45px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       flex-shrink: 0;
     }
 
     .contact-details h6 {
       font-weight: 700;
-      color: #004369;
-      margin-bottom: 3px;
-      font-size: 0.9rem;
+      color: var(--primary-color);
+      margin-bottom: 2px;
+      font-size: clamp(0.75rem, 2vw, 0.9rem);
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
     .contact-details p {
       margin: 0;
-      color: #333;
-      font-size: 1rem;
-      font-weight: 500;
-      line-height: 1.3;
+      color: var(--text-dark);
+      font-size: clamp(0.9rem, 2.2vw, 1rem);
+      font-weight: 600;
     }
 
     .contact-cta {
       text-align: center;
-      padding-top: 20px;
+      padding-top: 1.5rem;
       border-top: 1px solid #e9ecef;
     }
 
     .contact-cta h5 {
-      color: #004369;
+      color: var(--primary-color);
       font-weight: 700;
-      margin-bottom: 15px;
-      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      font-size: clamp(1.1rem, 2.5vw, 1.3rem);
     }
 
     .cta-buttons {
       display: flex;
-      gap: 10px;
+      gap: clamp(0.5rem, 2vw, 1rem);
       justify-content: center;
       flex-wrap: wrap;
     }
 
-    footer {
-      background: linear-gradient(135deg, #004369, #0056b3);
+    .btn-custom {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       color: white;
-      padding: 30px 0;
+      border: none;
+      padding: clamp(10px, 2.5vw, 14px) clamp(20px, 4vw, 30px);
+      border-radius: 25px;
+      font-weight: 600;
+      font-size: clamp(0.85rem, 2vw, 0.95rem);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+      text-decoration: none;
+      white-space: nowrap;
+      min-width: fit-content;
+    }
+
+    .btn-custom:hover {
+      background: linear-gradient(135deg, #022b44, #003d82);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-medium);
+      color: white;
+    }
+
+    .toggle-portfolio-btn {
+      margin-top: 2rem;
+    }
+
+    /* Enhanced Footer */
+    footer {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: clamp(2rem, 4vw, 2.5rem) 0;
       text-align: center;
       box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
     }
+
     footer p {
       margin: 0;
-      font-size: 1rem;
+      font-size: clamp(0.9rem, 2vw, 1rem);
       opacity: 0.9;
     }
 
-    .animate {
-      animation: fadeInUp 1s ease-out;
+    /* Animations */
+    .animate-fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.8s ease-out forwards;
     }
+
     @keyframes fadeInUp {
-      from { transform: translateY(30px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+      to { 
+        opacity: 1; 
+        transform: translateY(0); 
+      }
     }
 
     .collapse-container {
       max-height: 0;
       overflow: hidden;
-      transition: max-height 0.6s ease;
+      transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
     .collapse-container.show {
-      max-height: 2000px;
+      max-height: 3000px;
     }
 
-    /* Responsive adjustments */
-    @media (max-width: 992px) {
-      .contact-info-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-      }
-      .contact-card {
-        margin: 0 20px;
-        padding: 30px 20px;
-      }
-      .contact-item {
-        padding: 12px;
-      }
-      .contact-icon {
-        padding: 10px;
-        font-size: 1.3rem;
-        margin-right: 12px;
-        min-width: 40px;
-      }
-      .contact-details h6 {
-        font-size: 0.85rem;
-      }
-      .contact-details p {
-        font-size: 0.95rem;
-      }
-    }
-
+    /* Mobile-specific optimizations */
     @media (max-width: 768px) {
-      #contact {
-        padding: 40px 0;
+      .navbar-nav {
+        background: rgba(0,0,0,0.1);
+        border-radius: 10px;
+        margin-top: 1rem;
+        padding: 0.5rem;
       }
-      .contact-info-grid {
+
+      .hero-content {
+        padding: 1.5rem;
+      }
+
+      .contact-grid {
         grid-template-columns: 1fr;
-        gap: 12px;
+        gap: 1rem;
       }
-      .contact-card {
-        padding: 25px 15px;
-        margin: 0 15px;
-        border-radius: 15px;
-      }
+
       .contact-item {
-        padding: 10px;
-        border-radius: 8px;
+        padding: 1rem;
+        flex-direction: row;
+        align-items: center;
       }
-      .contact-icon {
-        padding: 8px;
-        font-size: 1.2rem;
-        margin-right: 10px;
-        min-width: 35px;
-      }
-      .contact-details h6 {
-        font-size: 0.8rem;
-      }
-      .contact-details p {
-        font-size: 0.9rem;
-      }
-      .contact-cta {
-        padding-top: 15px;
-      }
-      .contact-cta h5 {
-        font-size: 1.1rem;
-        margin-bottom: 12px;
-      }
+
       .cta-buttons {
         flex-direction: column;
         align-items: center;
-        gap: 8px;
+        gap: 0.75rem;
       }
+
       .btn-custom {
         width: 100%;
         max-width: 280px;
-        padding: 10px 20px;
-        font-size: 0.9rem;
+        justify-content: center;
+      }
+
+      .service-card {
+        margin-bottom: 1.5rem;
       }
     }
 
     @media (max-width: 480px) {
       .contact-card {
-        margin: 0 10px;
-        padding: 20px 12px;
+        margin: 0 1rem;
+        padding: 1.5rem;
       }
+
       .contact-item {
-        padding: 8px;
-        flex-direction: column;
-        text-align: center;
+        padding: 0.8rem;
       }
-      .contact-icon {
-        margin-right: 0;
-        margin-bottom: 8px;
+
+      .portfolio-card {
+        margin-bottom: 1.5rem;
       }
-      .contact-details h6 {
-        font-size: 0.75rem;
+
+      .service-card {
+        padding: 1.5rem;
       }
-      .contact-details p {
-        font-size: 0.85rem;
+    }
+
+    /* Loading animation */
+    @keyframes shimmer {
+      0% { background-position: -468px 0; }
+      100% { background-position: 468px 0; }
+    }
+
+    .loading-shimmer {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 400% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+
+    /* Accessibility improvements */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
       }
-      .btn-custom {
-        max-width: 100%;
-        padding: 8px 16px;
-        font-size: 0.85rem;
+    }
+
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+      .service-card,
+      .contact-card,
+      .company-intro-card {
+        border: 2px solid var(--primary-color);
       }
     }
   </style>
 </head>
 <body>
 
-<!-- Navbar -->
+<!-- Enhanced Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark">
   <div class="container">
-    <a class="navbar-brand" href="#">현대 에너지</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <a class="navbar-brand" href="#">🌞 현대 에너지</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a class="nav-link" href="#contact"><i class="bi bi-envelope"></i>문의</a>
+          <a class="nav-link" href="#about"><i class="bi bi-building"></i>회사소개</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#services"><i class="bi bi-gear"></i>서비스</a>
@@ -431,239 +597,182 @@
         <li class="nav-item">
           <a class="nav-link" href="#portfolio"><i class="bi bi-images"></i>포트폴리오</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#contact"><i class="bi bi-envelope"></i>문의하기</a>
+        </li>
       </ul>
     </div>
   </div>
 </nav>
 
-<!-- Banner -->
-<header>
-  <div id="projectCarousel" class="carousel slide" data-bs-ride="carousel">
+<!-- Enhanced Hero Section -->
+<section class="hero-section">
+  <div id="projectCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
     <div class="carousel-inner">
       <div class="carousel-item active">
-        <img src="./images/banner_image.JPG" class="d-block w-100" alt="Banner">
+        <img src="./images/banner_image.JPG" class="d-block w-100" alt="태양광 설치 현장" loading="lazy">
+        <div class="hero-overlay">
+          <div class="hero-content animate-fade-up">
+            <h1>친환경 미래를 선도하는<br>태양광 전문기업</h1>
+            <p>현대 에너지와 함께 지속가능한 에너지 솔루션을 만나보세요</p>
+            <a href="#contact" class="btn btn-custom btn-lg">
+              <i class="bi bi-chat-dots"></i> 무료 상담받기
+            </a>
+          </div>
+        </div>
       </div>
       <div class="carousel-item">
-        <img src="./images/banner_image2.JPG" class="d-block w-100" alt="Banner">
+        <img src="./images/banner_image2.JPG" class="d-block w-100" alt="태양광 패널 설치" loading="lazy">
+        <div class="hero-overlay">
+          <div class="hero-content animate-fade-up">
+            <h1>전문적이고 안전한<br>태양광 시스템 구축</h1>
+            <p>주택부터 산업용까지, 맞춤형 솔루션을 제공합니다</p>
+            <a href="#services" class="btn btn-custom btn-lg">
+              <i class="bi bi-arrow-right"></i> 서비스 보기
+            </a>
+          </div>
+        </div>
       </div>
       <div class="carousel-item">
-        <img src="./images/banner_image3.JPG" class="d-block w-100" alt="Banner">
+        <img src="./images/banner_image3.JPG" class="d-block w-100" alt="태양광 유지보수" loading="lazy">
+        <div class="hero-overlay">
+          <div class="hero-content animate-fade-up">
+            <h1>지속적인 관리와<br>최적 성능 보장</h1>
+            <p>설치 후에도 꾸준한 점검과 유지보수로 함께합니다</p>
+            <a href="#portfolio" class="btn btn-custom btn-lg">
+              <i class="bi bi-eye"></i> 포트폴리오 보기
+            </a>
+          </div>
+        </div>
       </div>
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#projectCarousel" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon"></span>
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
     </button>
     <button class="carousel-control-next" type="button" data-bs-target="#projectCarousel" data-bs-slide="next">
-      <span class="carousel-control-next-icon"></span>
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
     </button>
   </div>
-</header>
+</section>
 
-<!-- Company Intro -->
-<section id="about" class="container animate">
-  <h2 class="text-center mb-4">회사 소개</h2>
-  <div class="row justify-content-center">
-    <div class="col-md-10">
-      <div class="service-card">
-        <p class="lead">
-          현대 에너지는 친환경 미래를 선도하는 태양광 전문 기업으로, 
-          주택, 상업, 산업 현장에 최적화된 솔루션을 제공합니다. 
-          고객 맞춤형 서비스와 안정적인 유지보수로 신뢰받는 파트너가 되겠습니다.
-        </p>
+<!-- Enhanced Company Intro -->
+<section id="about" class="animate-fade-up">
+  <div class="container">
+    <h2 class="section-title">회사 소개</h2>
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="company-intro-card">
+          <p class="lead">
+            <strong>현대 에너지</strong>는 친환경 미래를 선도하는 태양광 전문 기업으로, 
+            <strong>주택, 상업, 산업 현장</strong>에 최적화된 솔루션을 제공합니다. 
+            <br><br>
+            고객 맞춤형 서비스와 안정적인 유지보수로 신뢰받는 파트너가 되어, 
+            지속가능한 에너지 전환에 함께하겠습니다.
+          </p>
+          <div class="row mt-4 text-center">
+            <div class="col-md-4">
+              <i class="bi bi-award text-primary" style="font-size: 2rem;"></i>
+              <h6 class="mt-2 mb-0">전문성</h6>
+            </div>
+            <div class="col-md-4">
+              <i class="bi bi-shield-check text-success" style="font-size: 2rem;"></i>
+              <h6 class="mt-2 mb-0">신뢰성</h6>
+            </div>
+            <div class="col-md-4">
+              <i class="bi bi-heart text-danger" style="font-size: 2rem;"></i>
+              <h6 class="mt-2 mb-0">고객만족</h6>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Services -->
-<section id="services" class="container text-center animate">
-  <h2 class="mb-4">서비스 소개</h2>
-  <div class="row g-4">
-    <div class="col-md-4">
-      <div class="service-card">
-        <i class="bi bi-house-gear service-icon"></i>
-        <h5>주택용 설치</h5>
-        <p>가정에 최적화된 고효율 태양광 시스템 설치 및 맞춤형 컨설팅을 제공합니다.</p>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="service-card">
-        <i class="bi bi-building-check service-icon"></i>
-        <h5>상업용 프로젝트</h5>
-        <p>기업 및 산업용 대규모 태양광 솔루션과 전문적인 프로젝트 관리를 제공합니다.</p>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="service-card">
-        <i class="bi bi-tools service-icon"></i>
-        <h5>유지보수 및 지원</h5>
-        <p>지속적인 점검과 신속한 기술 지원으로 최적의 성능을 보장합니다.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Portfolio -->
-<section id="portfolio" class="container animate">
-  <h2 class="text-center mb-4">포트폴리오</h2>
-  <div class="row g-4" id="portfolioGrid">
-    <div class="col-md-4 portfolio-card">
-      <img src="./images/IMG_4242.JPG" alt="Portfolio 1">
-      <h5>주택용 설치</h5>
-      <p class="text-muted">안산 주택 옥상 태양광 시스템 구축 (2024)</p>
-    </div>
-    <div class="col-md-4 portfolio-card">
-      <img src="./images/IMG_4248.JPG" alt="Portfolio 2">
-      <h5>상업용 설치</h5>
-      <p class="text-muted">인천 공장 지붕 대규모 태양광 설치 (2024)</p>
-    </div>
-    <div class="col-md-4 portfolio-card">
-      <img src="./images/IMG_4262.JPG" alt="Portfolio 3">
-      <h5>유지보수</h5>
-      <p class="text-muted">수원 태양광 시스템 점검 및 성능 최적화 (2025)</p>
-    </div>
-  </div>
-
-  <div id="moreProjects" class="collapse-container mt-4">
+<!-- Enhanced Services -->
+<section id="services" class="animate-fade-up">
+  <div class="container">
+    <h2 class="section-title">서비스 소개</h2>
     <div class="row g-4">
-      <div class="col-md-4 portfolio-card">
-        <img src="./images/IMG_4252.JPG" alt="Portfolio 4">
-        <h5>산업용 프로젝트</h5>
-        <p class="text-muted">대규모 산업단지 태양광 발전소 구축 (2025)</p>
-      </div>
-      <div class="col-md-4 portfolio-card">
-        <img src="./images/IMG_4261.JPG" alt="Portfolio 5">
-        <h5>주택 리모델링</h5>
-        <p class="text-muted">가정 리모델링 프로젝트와 연계한 태양광 설치</p>
-      </div>
-      <div class="col-md-4 portfolio-card">
-        <img src="./images/IMG_4279.JPG" alt="Portfolio 6">
-        <h5>상업 유지보수</h5>
-        <p class="text-muted">기업 태양광 패널 정기 점검 및 유지보수</p>
-      </div>
-      <div class="col-md-4 portfolio-card">
-        <img src="./images/IMG_4281.JPG" alt="Portfolio 7">
-        <h5>교육기관 프로젝트</h5>
-        <p class="text-muted">학교 옥상 친환경 태양광 시스템 설치</p>
-      </div>
-      <div class="col-md-4 portfolio-card">
-        <img src="./images/IMG_4283.JPG" alt="Portfolio 8">
-        <h5>공공기관 프로젝트</h5>
-        <p class="text-muted">공공시설 태양광 발전 시스템 구축</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="text-center mt-5">
-    <button id="togglePortfolio" class="btn btn-custom">
-      <span id="toggleIcon">▼</span> 더 많은 프로젝트 보기
-    </button>
-  </div>
-</section>
-
-<!-- Professional Contact Section -->
-<section id="contact" class="animate">
-  <div class="container">
-    <h2 class="text-center mb-5">문의하기</h2>
-    <div class="contact-card">
-      
-      <div class="contact-info-grid">
-        
-        <div class="contact-item">
-          <div class="contact-icon">
-            <i class="bi bi-telephone-fill"></i>
-          </div>
-          <div class="contact-details">
-            <h6>대표번호</h6>
-            <p>1688-7805</p>
-          </div>
-        </div>
-
-        <div class="contact-item">
-          <div class="contact-icon">
-            <i class="bi bi-phone-fill"></i>
-          </div>
-          <div class="contact-details">
-            <h6>휴대폰</h6>
-            <p>010-8389-357</p>
-          </div>
-        </div>
-
-        <div class="contact-item">
-          <div class="contact-icon">
-            <i class="bi bi-printer-fill"></i>
-          </div>
-          <div class="contact-details">
-            <h6>팩스</h6>
-            <p>02-6499-7805</p>
-          </div>
-        </div>
-
-        <div class="contact-item">
-          <div class="contact-icon">
-            <i class="bi bi-geo-alt-fill"></i>
-          </div>
-          <div class="contact-details">
-            <h6>본사 주소</h6>
-            <p>경기도 양주시 광사로 131-127</p>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="contact-cta">
-        <h5>태양광 설치 상담을 원하시나요?</h5>
-        <div class="cta-buttons">
-          <a href="tel:1688-7805" class="btn btn-custom">
-            <i class="bi bi-telephone-fill"></i> 전화 상담
-          </a>
-          <a href="#" class="btn btn-custom">
-            <i class="bi bi-envelope-fill"></i> 이메일 문의
-          </a>
-          <a href="#" class="btn btn-custom">
-            <i class="bi bi-calendar-check"></i> 방문 상담 예약
-          </a>
+      <div class="col-lg-4 col-md-6">
+        <div class="service-card">
+          <i class="bi bi-house-gear service-icon"></i>
+          <h5>주택용 태양광 설치</h5>
+          <p>가정에 최적화된 고효율 태양광 시스템 설치 및 맞춤형 컨설팅을 제공합니다. 전력 사용량 분석부터 최적 설계까지 원스톱 서비스.</p>
         </div>
       </div>
-
+      <div class="col-lg-4 col-md-6">
+        <div class="service-card">
+          <i class="bi bi-building-check service-icon"></i>
+          <h5>상업용 대규모 프로젝트</h5>
+          <p>기업 및 산업용 대규모 태양광 솔루션과 전문적인 프로젝트 관리를 제공합니다. ROI 분석과 장기 운영 계획 포함.</p>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="service-card">
+          <i class="bi bi-tools service-icon"></i>
+          <h5>유지보수 및 기술지원</h5>
+          <p>지속적인 점검과 신속한 기술 지원으로 최적의 성능을 보장합니다. 24시간 모니터링과 예방 정비 서비스.</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- Footer -->
-<footer>
+<!-- Enhanced Portfolio -->
+<section id="portfolio" class="animate-fade-up">
   <div class="container">
-    <p>&copy; 2025 현대 에너지. All rights reserved. | 태양광 전문 기업</p>
-  </div>
-</footer>
+    <h2 class="section-title">포트폴리오</h2>
+    <div class="row g-4" id="portfolioGrid">
+      <div class="col-lg-4 col-md-6">
+        <div class="portfolio-card">
+          <div class="portfolio-image-container">
+            <img src="./images/IMG_4242.JPG" alt="안산 주택 태양광 설치" loading="lazy">
+            <div class="portfolio-overlay">
+              <i class="bi bi-zoom-in"></i>
+            </div>
+          </div>
+          <div class="portfolio-info">
+            <h5>안산 주택용 태양광</h5>
+            <p class="text-muted">주택 옥상 고효율 태양광 시스템 구축 (2024)</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="portfolio-card">
+          <div class="portfolio-image-container">
+            <img src="./images/IMG_4248.JPG" alt="인천 공장 태양광 설치" loading="lazy">
+            <div class="portfolio-overlay">
+              <i class="bi bi-zoom-in"></i>
+            </div>
+          </div>
+          <div class="portfolio-info">
+            <h5>인천 공장 대규모 설치</h5>
+            <p class="text-muted">공장 지붕 대규모 태양광 발전소 구축 (2024)</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="portfolio-card">
+          <div class="portfolio-image-container">
+            <img src="./images/IMG_4262.JPG" alt="수원 태양광 유지보수" loading="lazy">
+            <div class="portfolio-overlay">
+              <i class="bi bi-zoom-in"></i>
+            </div>
+          </div>
+          <div class="portfolio-info">
+            <h5>수원 시스템 최적화</h5>
+            <p class="text-muted">태양광 시스템 점검 및 성능 최적화 (2025)</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  const toggleBtn = document.getElementById("togglePortfolio");
-  const moreProjects = document.getElementById("moreProjects");
-
-  toggleBtn.addEventListener("click", function() {
-    moreProjects.classList.toggle("show");
-    if (moreProjects.classList.contains("show")) {
-      toggleBtn.innerHTML = '<span id="toggleIcon">▲</span> 프로젝트 접기';
-    } else {
-      toggleBtn.innerHTML = '<span id="toggleIcon">▼</span> 더 많은 프로젝트 보기';
-    }
-  });
-
-  // Smooth scrolling for navigation links
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
-    });
-  });
-</script>
-</body>
-</html>
+    <div id="moreProjects" class="collapse-container">
+      <div class="row g-4 mt-2">
+        <div class="col-lg-4 col-md-6">
+          <div class="portfolio-card">
+            <div class="portfolio-image-container">
+              <img src="./images/IMG_4252.JPG" alt="산업단지 태양광
