@@ -1,0 +1,942 @@
+<anArtifact identifier="complete-admin-panel-single" type="text/html" title="Complete Admin Panel - Single File">
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>현대 에너지 - 관리자 패널</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #004369;
+      --secondary-color: #0056b3;
+      --accent-color: #28a745;
+      --danger-color: #dc3545;
+      --warning-color: #ffc107;
+    }
+ body {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.login-container {
+  max-width: 400px;
+  margin: 100px auto;
+}
+
+.login-card {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+.admin-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: none;
+}
+
+.admin-header {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 15px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.admin-content {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.portfolio-item {
+  background: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: all 0.3s;
+}
+
+.portfolio-item:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 15px rgba(0,67,105,0.2);
+}
+
+.portfolio-thumbnail {
+  width: 150px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #022b44, #003d82);
+}
+
+.modal-header {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+}
+
+.image-preview {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.stats-card {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.stats-card h3 {
+  font-size: 2.5rem;
+  margin: 0;
+}
+
+.stats-card p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+.tab-content {
+  margin-top: 20px;
+}
+
+.nav-tabs .nav-link {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.nav-tabs .nav-link.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.export-section {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .portfolio-thumbnail {
+    width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+  }
+
+  .admin-header {
+    text-align: center;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .action-buttons button {
+    width: 100%;
+  }
+}
+    </style>
+</head>
+<body>
+<!-- Login Section -->
+<div id="loginSection" class="login-container">
+  <div class="login-card">
+    <div class="text-center mb-4">
+      <h2 style="color: var(--primary-color);">🌞 현대 에너지</h2>
+      <p class="text-muted">관리자 로그인</p>
+    </div>
+    <form id="loginForm">
+      <div class="mb-3">
+        <label class="form-label">사용자 이름</label>
+        <input type="text" class="form-control" id="username" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">비밀번호</label>
+        <input type="password" class="form-control" id="password" required>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">
+        <i class="bi bi-box-arrow-in-right"></i> 로그인
+      </button>
+    </form>
+    <div id="loginError" class="alert alert-danger mt-3" style="display: none;">
+      잘못된 사용자 이름 또는 비밀번호입니다.
+    </div>
+    <div class="mt-3 text-center">
+      <small class="text-muted">기본 비밀번호: admin / hyundai2025</small>
+    </div>
+  </div>
+</div>
+<!-- Admin Dashboard -->
+<div id="adminSection" class="admin-container">
+  <!-- Header -->
+  <div class="admin-header">
+    <div>
+      <h3 class="mb-0" style="color: var(--primary-color);">🌞 현대 에너지 관리자 패널</h3>
+      <small class="text-muted">웹사이트 콘텐츠 관리</small>
+    </div>
+    <div class="action-buttons">
+      <button class="btn btn-outline-success" onclick="exportData()">
+        <i class="bi bi-download"></i> 데이터 내보내기
+      </button>
+      <button class="btn btn-outline-info" onclick="showImportModal()">
+        <i class="bi bi-upload"></i> 데이터 가져오기
+      </button>
+      <button class="btn btn-outline-danger" onclick="logout()">
+        <i class="bi bi-box-arrow-right"></i> 로그아웃
+      </button>
+    </div>
+  </div>
+  <!-- Stats Cards -->
+  <div class="row">
+    <div class="col-md-4">
+      <div class="stats-card">
+        <h3 id="totalProjects">0</h3>
+        <p><i class="bi bi-folder"></i> 총 프로젝트</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stats-card" style="background: linear-gradient(135deg, #28a745, #20c997);">
+        <h3 id="visibleProjects">0</h3>
+        <p><i class="bi bi-eye"></i> 표시된 프로젝트</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stats-card" style="background: linear-gradient(135deg, #ffc107, #ff9800);">
+        <h3 id="hiddenProjects">0</h3>
+        <p><i class="bi bi-eye-slash"></i> 숨김 프로젝트</p>
+      </div>
+    </div>
+  </div>
+  <!-- Main Content -->
+  <div class="admin-content">
+    <!-- Tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#portfolioTab">
+          <i class="bi bi-images"></i> 포트폴리오 관리
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#settingsTab">
+          <i class="bi bi-gear"></i> 사이트 설정
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#helpTab">
+          <i class="bi bi-question-circle"></i> 도움말
+        </a>
+      </li>
+    </ul>
+    <div class="tab-content">
+  <!-- Portfolio Management Tab -->
+  <div id="portfolioTab" class="tab-pane fade show active">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+      <h4>포트폴리오 프로젝트</h4>
+      <button class="btn btn-primary" onclick="openAddModal()">
+        <i class="bi bi-plus-circle"></i> 새 프로젝트 추가
+      </button>
+    </div>
+
+    <div id="portfolioList">
+      <!-- Portfolio items will be loaded here -->
+    </div>
+  </div>
+
+  <!-- Settings Tab -->
+  <div id="settingsTab" class="tab-pane fade">
+    <h4 class="mb-4">사이트 설정</h4>
+    
+    <div class="mb-4">
+      <h5>연락처 정보</h5>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">대표번호</label>
+          <input type="text" class="form-control" id="mainPhone" value="1688-7805">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">휴대폰</label>
+          <input type="text" class="form-control" id="mobilePhone" value="010-8389-357">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">팩스</label>
+          <input type="text" class="form-control" id="fax" value="02-6499-7805">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">주소</label>
+          <input type="text" class="form-control" id="address" value="경기도 양주시 광사로 131-127">
+        </div>
+      </div>
+      <button class="btn btn-primary mt-3" onclick="saveSettings()">
+        <i class="bi bi-save"></i> 설정 저장
+      </button>
+    </div>
+
+    <div class="export-section">
+      <h5>데이터 관리</h5>
+      <p>웹사이트 데이터를 백업하거나 다른 브라우저로 이전할 수 있습니다.</p>
+      <div class="d-flex gap-2 flex-wrap">
+        <button class="btn btn-outline-primary" onclick="exportData()">
+          <i class="bi bi-download"></i> 전체 데이터 내보내기
+        </button>
+        <button class="btn btn-outline-secondary" onclick="showImportModal()">
+          <i class="bi bi-upload"></i> 데이터 가져오기
+        </button>
+        <button class="btn btn-outline-danger" onclick="clearAllData()">
+          <i class="bi bi-trash"></i> 모든 데이터 삭제
+        </button>
+      </div>
+    </div>
+
+    <div class="alert alert-info mt-3">
+      <i class="bi bi-info-circle"></i> 설정을 변경한 후 저장 버튼을 클릭하세요.
+    </div>
+  </div>
+
+  <!-- Help Tab -->
+  <div id="helpTab" class="tab-pane fade">
+    <h4 class="mb-4">사용 가이드</h4>
+    
+    <div class="accordion" id="helpAccordion">
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#help1">
+            프로젝트를 추가하는 방법
+          </button>
+        </h2>
+        <div id="help1" class="accordion-collapse collapse show" data-bs-parent="#helpAccordion">
+          <div class="accordion-body">
+            <ol>
+              <li>"포트폴리오 관리" 탭으로 이동합니다</li>
+              <li>"새 프로젝트 추가" 버튼을 클릭합니다</li>
+              <li>프로젝트 정보를 입력합니다 (제목, 설명, 카테고리, 연도)</li>
+              <li>이미지를 업로드합니다 (선택사항)</li>
+              <li>"저장" 버튼을 클릭합니다</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#help2">
+            프로젝트를 수정하거나 삭제하는 방법
+          </button>
+        </h2>
+        <div id="help2" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+          <div class="accordion-body">
+            <p><strong>수정:</strong></p>
+            <ol>
+              <li>수정하려는 프로젝트의 "편집" 버튼을 클릭합니다</li>
+              <li>정보를 수정합니다</li>
+              <li>"저장" 버튼을 클릭합니다</li>
+            </ol>
+            <p><strong>삭제:</strong></p>
+            <ol>
+              <li>삭제하려는 프로젝트의 "삭제" 버튼을 클릭합니다</li>
+              <li>확인 메시지에서 "확인"을 클릭합니다</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#help3">
+            데이터 백업 방법
+          </button>
+        </h2>
+        <div id="help3" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+          <div class="accordion-body">
+            <ol>
+              <li>"사이트 설정" 탭으로 이동합니다</li>
+              <li>"전체 데이터 내보내기" 버튼을 클릭합니다</li>
+              <li>JSON 파일이 다운로드됩니다</li>
+              <li>이 파일을 안전한 곳에 보관하세요</li>
+            </ol>
+            <p class="text-muted mt-2">백업된 데이터는 "데이터 가져오기" 기능으로 복원할 수 있습니다.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#help4">
+            이미지 업로드 가이드
+          </button>
+        </h2>
+        <div id="help4" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+          <div class="accordion-body">
+            <p><strong>권장 이미지 사양:</strong></p>
+            <ul>
+              <li>형식: JPG, PNG</li>
+              <li>크기: 1920x1080 픽셀 이하</li>
+              <li>용량: 2MB 이하 권장</li>
+              <li>비율: 16:9 또는 4:3</li>
+            </ul>
+            <p class="text-warning"><i class="bi bi-exclamation-triangle"></i> 참고: 이미지는 브라우저 저장소에 저장되므로 너무 큰 이미지는 피해주세요.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#help5">
+            문제 해결
+          </button>
+        </h2>
+        <div id="help5" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+          <div class="accordion-body">
+            <p><strong>데이터가 사라졌어요:</strong></p>
+            <p>브라우저 캐시를 지우면 데이터가 삭제될 수 있습니다. 정기적으로 데이터를 백업하세요.</p>
+            
+            <p><strong>이미지가 표시되지 않아요:</strong></p>
+            <p>이미지 파일이 너무 크거나 형식이 지원되지 않을 수 있습니다. JPG 또는 PNG 형식으로 시도해보세요.</p>
+            
+            <p><strong>로그인이 안 돼요:</strong></p>
+            <p>기본 사용자명은 "admin"이고 비밀번호는 "hyundai2025"입니다.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<!-- Add/Edit Project Modal -->
+<div class="modal fade" id="projectModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle">새 프로젝트 추가</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="projectForm">
+          <input type="hidden" id="projectId">
+          <div class="mb-3">
+        <label class="form-label">프로젝트 제목 *</label>
+        <input type="text" class="form-control" id="projectTitle" required placeholder="예: 주택용 태양광 설치">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">설명 *</label>
+        <textarea class="form-control" id="projectDescription" rows="3" required placeholder="예: 안산 주택 옥상 태양광 시스템 구축 (2024)"></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">이미지</label>
+        <input type="file" class="form-control" id="projectImage" accept="image/*" onchange="previewImage(this)">
+        <small class="text-muted">권장: JPG/PNG, 1920x1080px 이하, 2MB 이하</small>
+        <img id="imagePreview" class="image-preview" style="display: none;">
+        <input type="hidden" id="existingImage">
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">카테고리 *</label>
+          <select class="form-select" id="projectCategory" required>
+            <option value="residential">주택용 설치</option>
+            <option value="commercial">상업용 설치</option>
+            <option value="maintenance">유지보수</option>
+            <option value="industrial">산업용 프로젝트</option>
+            <option value="public">공공기관 프로젝트</option>
+            <option value="education">교육기관 프로젝트</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label">연도 *</label>
+          <input type="number" class="form-control" id="projectYear" min="2020" max="2030" value="2025" required>
+        </div>
+      </div>
+
+      <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="projectVisible" checked>
+        <label class="form-check-label" for="projectVisible">
+          웹사이트에 표시
+        </label>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+    <button type="button" class="btn btn-primary" onclick="saveProject()">
+      <i class="bi bi-save"></i> 저장
+    </button>
+  </div>
+</div>
+</div>
+</div>
+<!-- Import Data Modal -->
+<div class="modal fade" id="importModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">데이터 가져오기</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>이전에 내보낸 JSON 파일을 선택하세요.</p>
+        <input type="file" class="form-control" id="importFile" accept=".json">
+        <div class="alert alert-warning mt-3">
+          <i class="bi bi-exclamation-triangle"></i> 경고: 기존 데이터가 모두 대체됩니다!
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+        <button type="button" class="btn btn-primary" onclick="importData()">
+          <i class="bi bi-upload"></i> 가져오기
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Storage key for localStorage
+  const STORAGE_KEY = 'hyundai_energy_data';
+  const ADMIN_CREDENTIALS = {
+    username: 'admin',
+    password: 'hyundai2025' // IMPORTANT: Change this password!
+  };
+
+  // Initialize data structure
+  let siteData = {
+    projects: [],
+    settings: {
+      mainPhone: '1688-7805',
+      mobilePhone: '010-8389-357',
+      fax: '02-6499-7805',
+      address: '경기도 양주시 광사로 131-127'
+    }
+  };
+
+  // Load data from localStorage
+  function loadData() {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      siteData = JSON.parse(stored);
+    } else {
+      // Initialize with sample data
+      siteData.projects = [
+        {
+          id: 1,
+          title: '주택용 설치',
+          description: '안산 주택 옥상 태양광 시스템 구축 (2024)',
+          image: './images/IMG_4242.JPG',
+          category: 'residential',
+          year: 2024,
+          visible: true
+        },
+        {
+          id: 2,
+          title: '상업용 설치',
+          description: '인천 공장 지붕 대규모 태양광 설치 (2024)',
+          image: './images/IMG_4248.JPG',
+          category: 'commercial',
+          year: 2024,
+          visible: true
+        },
+        {
+          id: 3,
+          title: '유지보수',
+          description: '수원 태양광 시스템 점검 및 성능 최적화 (2025)',
+          image: './images/IMG_4262.JPG',
+          category: 'maintenance',
+          year: 2025,
+          visible: true
+        }
+      ];
+      saveData();
+    }
+  }
+
+  // Save data to localStorage
+  function saveData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(siteData));
+    updateStats();
+  }
+
+  // Login functionality
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+      document.getElementById('loginSection').style.display = 'none';
+      document.getElementById('adminSection').style.display = 'block';
+      loadData();
+      renderPortfolio();
+      loadSettings();
+    } else {
+      document.getElementById('loginError').style.display = 'block';
+    }
+  });
+
+  // Logout
+  function logout() {
+    if (confirm('로그아웃 하시겠습니까?')) {
+      document.getElementById('loginSection').style.display = 'block';
+      document.getElementById('adminSection').style.display = 'none';
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+      document.getElementById('loginError').style.display = 'none';
+    }
+  }
+
+  // Update statistics
+  function updateStats() {
+    const total = siteData.projects.length;
+    const visible = siteData.projects.filter(p => p.visible).length;
+    const hidden = total - visible;
+
+    document.getElementById('totalProjects').textContent = total;
+    document.getElementById('visibleProjects').textContent = visible;
+    document.getElementById('hiddenProjects').textContent = hidden;
+  }
+
+  // Render portfolio list
+  function renderPortfolio() {
+    const container = document.getElementById('portfolioList');
+    container.innerHTML = '';
+
+    if (siteData.projects.length === 0) {
+      container.innerHTML = '<div class="alert alert-info"><i class="bi bi-info-circle"></i> 프로젝트가 없습니다. 새 프로젝트를 추가하세요.</div>';
+      return;
+    }
+
+    siteData.projects.forEach(project => {
+      const item = document.createElement('div');
+      item.className = 'portfolio-item';
+      item.innerHTML = `
+        <div class="row align-items-center">
+          <div class="col-md-2 mb-3 mb-md-0">
+            <img src="${project.image}" class="portfolio-thumbnail w-100" alt="${project.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22150%22 height=%22100%22/%3E%3Ctext fill=%22%23999%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3E이미지 없음%3C/text%3E%3C/svg%3E'">
+          </div>
+          <div class="col-md-6 mb-3 mb-md-0">
+            <h5 class="mb-1">${project.title}</h5>
+            <p class="text-muted mb-2">${project.description}</p>
+            <div>
+              <span class="badge bg-secondary">${getCategoryName(project.category)}</span>
+              <span class="badge bg-info">${project.year}</span>
+              ${project.visible ? '<span class="badge bg-success">표시됨</span>' : '<span class="badge bg-warning text-dark">숨김</span>'}
+            </div>
+          </div>
+          <div class="col-md-4 text-md-end">
+            <button class="btn btn-sm btn-outline-primary me-2 mb-2" onclick="editProject(${project.id})">
+              <i class="bi bi-pencil"></i> 편집
+            </button>
+            <button class="btn btn-sm btn-outline-danger mb-2" onclick="deleteProject(${project.id})">
+              <i class="bi bi-trash"></i> 삭제
+            </button>
+          </div>
+        </div>
+      `;
+      container.appendChild(item);
+    });
+  }
+
+  // Get category name in Korean
+  function getCategoryName(category) {
+    const categories = {
+      residential: '주택용',
+      commercial: '상업용',
+      maintenance: '유지보수',
+      industrial: '산업용',
+      public: '공공기관',
+      education: '교육기관'
+    };
+    return categories[category] || category;
+  }
+
+  // Open add modal
+  function openAddModal() {
+    document.getElementById('modalTitle').
+      textContent = '새 프로젝트 추가';
+document.getElementById('projectForm').reset();
+document.getElementById('projectId').value = '';
+document.getElementById('existingImage').value = '';
+document.getElementById('imagePreview').style.display = 'none';
+document.getElementById('projectVisible').checked = true;
+document.getElementById('projectYear').value = new Date().getFullYear();
+new bootstrap.Modal(document.getElementById('projectModal')).show();
+}
+// Edit project
+function editProject(id) {
+const project = siteData.projects.find(p => p.id === id);
+if (!project) return;
+  document.getElementById('modalTitle').textContent = '프로젝트 편집';
+document.getElementById('projectId').value = project.id;
+document.getElementById('projectTitle').value = project.title;
+document.getElementById('projectDescription').value = project.description;
+document.getElementById('projectCategory').value = project.category;
+document.getElementById('projectYear').value = project.year;
+document.getElementById('projectVisible').checked = project.visible;
+document.getElementById('existingImage').value = project.image;
+
+if (project.image) {
+  document.getElementById('imagePreview').src = project.image;
+  document.getElementById('imagePreview').style.display = 'block';
+}
+
+new bootstrap.Modal(document.getElementById('projectModal')).show();
+  // Preview image
+function previewImage(input) {
+if (input.files && input.files[0]) {
+const file = input.files[0];
+// Check file size (max 5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    alert('이미지 파일이 너무 큽니다. 5MB 이하의 파일을 선택하세요.');
+    input.value = '';
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('imagePreview').src = e.target.result;
+    document.getElementById('imagePreview').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+  // Save project
+function saveProject() {
+const id = document.getElementById('projectId').value;
+const title = document.getElementById('projectTitle').value;
+const description = document.getElementById('projectDescription').value;
+const category = document.getElementById('projectCategory').value;
+const year = document.getElementById('projectYear').value;
+const visible = document.getElementById('projectVisible').checked;
+const imageFile = document.getElementById('projectImage').files[0];
+const existingImage = document.getElementById('existingImage').value;if (!title || !description) {
+  alert('제목과 설명을 입력하세요.');
+  return;
+}
+
+const project = {
+  title,
+  description,
+  category,
+  year: parseInt(year),
+  visible
+};
+
+// Handle image
+if (imageFile) {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    project.image = e.target.result;
+    finalizeProjectSave(id, project);
+  };
+  reader.readAsDataURL(imageFile);
+} else {
+  project.image = existingImage || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22150%22 height=%22100%22/%3E%3Ctext fill=%22%23999%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3E이미지 없음%3C/text%3E%3C/svg%3E';
+  finalizeProjectSave(id, project);
+}
+  function finalizeProjectSave(id, project) {
+if (id) {
+// Edit existing
+const index = siteData.projects.findIndex(p => p.id === parseInt(id));
+if (index !== -1) {
+project.id = parseInt(id);
+siteData.projects[index] = project;
+}
+} else {
+// Add new
+project.id = Date.now();
+siteData.projects.push(project);
+}saveData();
+renderPortfolio();
+bootstrap.Modal.getInstance(document.getElementById('projectModal')).hide();
+
+// Show success message
+showNotification('프로젝트가 성공적으로 저장되었습니다!', 'success');
+    // Delete project
+function deleteProject(id) {
+if (!confirm('이 프로젝트를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) return;
+
+    siteData.projects = siteData.projects.filter(p => p.id !== id);
+saveData();
+renderPortfolio();
+showNotification('프로젝트가 삭제되었습니다.', 'info');
+  // Load settings
+function loadSettings() {
+document.getElementById('mainPhone').value = siteData.settings.mainPhone;
+document.getElementById('mobilePhone').value = siteData.settings.mobilePhone;
+document.getElementById('fax').value = siteData.settings.fax;
+document.getElementById('address').value = siteData.settings.address;
+}
+// Save settings
+function saveSettings() {
+siteData.settings = {
+mainPhone: document.getElementById('mainPhone').value,
+mobilePhone: document.getElementById('mobilePhone').value,
+fax: document.getElementById('fax').value,
+address: document.getElementById('address').value
+};
+saveData();
+showNotification('설정이 저장되었습니다!', 'success');
+}
+// Export data as JSON
+function exportData() {
+const dataStr = JSON.stringify(siteData, null, 2);
+const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+const exportFileDefaultName = hyundai-energy-backup-${new Date().toISOString().split('T')[0]}.json;const linkElement = document.createElement('a');
+linkElement.setAttribute('href', dataUri);
+linkElement.setAttribute('download', exportFileDefaultName);
+linkElement.click();
+
+showNotification('데이터가 성공적으로 내보내졌습니다!', 'success');// Show import modal
+function showImportModal() {
+new bootstrap.Modal(document.getElementById('importModal')).show();
+}
+// Import data from JSON
+function importData() {
+const fileInput = document.getElementById('importFile');
+const file = fileInput.files[0];if (!file) {
+  alert('파일을 선택하세요.');
+  return;
+}
+
+const reader = new FileReader();
+reader.onload = function(e) {
+  try {
+    const importedData = JSON.parse(e.target.result);
+    
+    // Validate data structure
+    if (!importedData.projects || !importedData.settings) {
+      throw new Error('잘못된 데이터 형식입니다.');
+    }
+
+    siteData = importedData;
+    saveData();
+    renderPortfolio();
+    loadSettings();
+    
+    bootstrap.Modal.getInstance(document.getElementById('importModal')).hide();
+    showNotification('데이터가 성공적으로 가져와졌습니다!', 'success');
+  } catch (error) {
+    alert('데이터 가져오기 실패: ' + error.message);
+  }
+};
+reader.readAsText(file);// Clear all data
+function clearAllData() {
+if (!confirm('모든 데이터를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다!\n\n계속하려면 "확인"을 클릭하세요.')) {
+return;
+}if (!confirm('정말로 모든 프로젝트와 설정을 삭제하시겠습니까?\n마지막 확인입니다.')) {
+  return;
+}
+
+localStorage.removeItem(STORAGE_KEY);
+siteData = {
+  projects: [],
+  settings: {
+    mainPhone: '1688-7805',
+    mobilePhone: '010-8389-357',
+    fax: '02-6499-7805',
+    address: '경기도 양주시 광사로 131-127'
+  }
+};
+saveData();
+renderPortfolio();
+loadSettings();
+showNotification('모든 데이터가 삭제되었습니다.', 'warning');// Show notification
+function showNotification(message, type = 'info') {
+const alertDiv = document.createElement('div');
+alertDiv.className = alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3;
+alertDiv.style.zIndex = '9999';
+alertDiv.style.minWidth = '300px';
+alertDiv.innerHTML =       ${message}       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>    ;
+document.body.appendChild(alertDiv);
+
+setTimeout(() => {
+  alertDiv.remove();
+}, 3000);
+}// Generate website code
+function generateWebsiteCode() {
+let portfolioHTML = '';
+const visibleProjects = siteData.projects.filter(p => p.visible);
+visibleProjects.forEach((project, index) => {
+  portfolioHTML += `
+<div class="col-md-4 portfolio-card">
+  <div class="portfolio-image-container">
+    <img src="${project.image}" alt="${project.title}" loading="lazy">
+    <div class="portfolio-overlay">
+      <i class="bi bi-eye"></i>
+    </div>
+  </div>
+  <div class="portfolio-info">
+    <h5>${project.title}</h5>
+    <p>${project.description}</p>
+  </div>
+</div>`;
+  
+  // Add to "more projects" section after 3 items
+  if (index === 2) {
+    portfolioHTML += `
+  </div>
+  <div id="moreProjects" class="collapse-container mt-4">
+    <div class="row g-4">`;
+      }
+    });
+if (visibleProjects.length > 3) {
+  portfolioHTML += `
+</div>
+</div>
+  <div class="text-center mt-5">
+    <button id="togglePortfolio" class="btn btn-custom">
+      <span id="toggleIcon">▼</span> 더 많은 프로젝트 보기
+    </button>
+  </div>`;
+    } else {
+      portfolioHTML += `
+  </div>`;
+    }
+console.log('Generated Portfolio HTML:', portfolioHTML);
+return portfolioHTML;
+}
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+// Check if already logged in (for development)
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('dev') === 'true') {
+document.getElementById('username').value = 'admin';
+document.getElementById('password').value = 'hyundai2025';
+}
+});
+</script>
+</body>
+</html>
+</anArtifact>
