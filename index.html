@@ -1,4 +1,6 @@
-<anArtifact identifier="complete-index-with-admin" type="text/html" title="Complete Index.html with Admin Integration">
+Here's the complete **index.html** with Firebase integration:
+
+<anArtifact identifier="firebase-index-html" type="text/html" title="Firebase-Integrated Index.html">
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -556,7 +558,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark">
   <div class="container">
     <a class="navbar-brand" href="#">🌞 현대 에너지</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
@@ -620,12 +622,10 @@
       </div>
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#projectCarousel" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
+      <span class="carousel-control-prev-icon"></span>
     </button>
     <button class="carousel-control-next" type="button" data-bs-target="#projectCarousel" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
+      <span class="carousel-control-next-icon"></span>
     </button>
   </div>
 </section>
@@ -738,70 +738,11 @@
 
   <div id="moreProjects" class="collapse-container mt-4">
     <div class="row g-4">
-      <div class="col-md-4 portfolio-card">
-        <div class="portfolio-image-container">
-          <img src="./images/IMG_4252.JPG" alt="Portfolio 4">
-          <div class="portfolio-overlay">
-            <i class="bi bi-eye"></i>
-          </div>
-        </div>
-        <div class="portfolio-info">
-          <h5>산업용 프로젝트</h5>
-          <p class="text-muted">대규모 산업단지 태양광 발전소 구축 (2025)</p>
-        </div>
-      </div>
-      <div class="col-md-4 portfolio-card">
-        <div class="portfolio-image-container">
-          <img src="./images/IMG_4261.JPG" alt="Portfolio 5">
-          <div class="portfolio-overlay">
-            <i class="bi bi-eye"></i>
-          </div>
-        </div>
-        <div class="portfolio-info">
-          <h5>주택 리모델링</h5>
-          <p class="text-muted">가정 리모델링 프로젝트와 연계한 태양광 설치</p>
-        </div>
-      </div>
-      <div class="col-md-4 portfolio-card">
-        <div class="portfolio-image-container">
-          <img src="./images/IMG_4279.JPG" alt="Portfolio 6">
-          <div class="portfolio-overlay">
-            <i class="bi bi-eye"></i>
-          </div>
-        </div>
-        <div class="portfolio-info">
-          <h5>상업 유지보수</h5>
-          <p class="text-muted">기업 태양광 패널 정기 점검 및 유지보수</p>
-        </div>
-      </div>
-      <div class="col-md-4 portfolio-card">
-        <div class="portfolio-image-container">
-          <img src="./images/IMG_4281.JPG" alt="Portfolio 7">
-          <div class="portfolio-overlay">
-            <i class="bi bi-eye"></i>
-          </div>
-        </div>
-        <div class="portfolio-info">
-          <h5>교육기관 프로젝트</h5>
-          <p class="text-muted">학교 옥상 친환경 태양광 시스템 설치</p>
-        </div>
-      </div>
-      <div class="col-md-4 portfolio-card">
-        <div class="portfolio-image-container">
-          <img src="./images/IMG_4283.JPG" alt="Portfolio 8">
-          <div class="portfolio-overlay">
-            <i class="bi bi-eye"></i>
-          </div>
-        </div>
-        <div class="portfolio-info">
-          <h5>공공기관 프로젝트</h5>
-          <p class="text-muted">공공시설 태양광 발전 시스템 구축</p>
-        </div>
-      </div>
+      <!-- More projects loaded dynamically from Firebase -->
     </div>
   </div>
 
-  <div class="text-center mt-5">
+  <div class="text-center mt-5" id="toggleButtonContainer" style="display: none;">
     <button id="togglePortfolio" class="btn btn-custom">
       <span id="toggleIcon">▼</span> 더 많은 프로젝트 보기
     </button>
@@ -820,7 +761,7 @@
           </div>
           <div class="contact-details">
             <h6>대표번호</h6>
-            <p>1688-7805</p>
+            <p id="contactMainPhone">1688-7805</p>
           </div>
         </div>
 
@@ -830,7 +771,7 @@
           </div>
           <div class="contact-details">
             <h6>휴대폰</h6>
-            <p>010-8389-357</p>
+            <p id="contactMobilePhone">010-8389-357</p>
           </div>
         </div>
 
@@ -840,7 +781,7 @@
           </div>
           <div class="contact-details">
             <h6>팩스</h6>
-            <p>02-6499-7805</p>
+            <p id="contactFax">02-6499-7805</p>
           </div>
         </div>
 
@@ -850,7 +791,7 @@
           </div>
           <div class="contact-details">
             <h6>본사 주소</h6>
-            <p>경기도 양주시 광사로 131-127</p>
+            <p id="contactAddress">경기도 양주시 광사로 131-127</p>
           </div>
         </div>
       </div>
@@ -858,7 +799,7 @@
       <div class="contact-cta">
         <h5>태양광 설치 상담을 원하시나요?</h5>
         <div class="cta-buttons">
-          <a href="tel:1688-7805" class="btn btn-custom">
+          <a href="tel:1688-7805" class="btn btn-custom" id="ctaPhoneLink">
             <i class="bi bi-telephone-fill"></i> 전화 상담
           </a>
           <a href="#" class="btn btn-custom">
@@ -880,21 +821,42 @@
   </div>
 </footer>
 
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+  // Firebase Configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDO07wt_ZK-EI9c7b_RDJ0661nCsmRKtm",
+    authDomain: "loginpage-9cf97.firebaseapp.com",
+    projectId: "loginpage-9cf97",
+    storageBucket: "loginpage-9cf97.firebasestorage.app",
+    messagingSenderId: "500004299637",
+    appId: "1:500004299637:web:2c5e496890k283a8f0693c"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // Toggle button functionality
   const toggleBtn = document.getElementById("togglePortfolio");
   const moreProjects = document.getElementById("moreProjects");
 
-  toggleBtn.addEventListener("click", function() {
-    moreProjects.classList.toggle("show");
-    if (moreProjects.classList.contains("show")) {
-      toggleBtn.innerHTML = '<span id="toggleIcon">▲</span> 프로젝트 접기';
-    } else {
-      toggleBtn.innerHTML = '<span id="toggleIcon">▼</span> 더 많은 프로젝트 보기';
-    }
-  });
+  if (toggleBtn) {
+    toggleBtn.addEventListener("click", function() {
+      moreProjects.classList.toggle("show");
+      if (moreProjects.classList.contains("show")) {
+        toggleBtn.innerHTML = '<span id="toggleIcon">▲</span> 프로젝트 접기';
+      } else {
+        toggleBtn.innerHTML = '<span id="toggleIcon">▼</span> 더 많은 프로젝트 보기';
+      }
+    });
+  }
 
-  // Smooth scrolling for navigation links
+  // Smooth scrolling
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
       e.preventDefault();
@@ -908,20 +870,24 @@
     });
   });
 
-  // Load portfolio from admin panel
-  (function() {
-    const adminData = localStorage.getItem('hyundai_energy_data');
-    if (!adminData) {
-      console.log('No admin data found, using default portfolio');
-      return;
-    }
-    
+  // Load portfolio from Firebase
+  async function loadPortfolioFromFirebase() {
     try {
-      const data = JSON.parse(adminData);
+      const doc = await db.collection('siteData').doc('hyundaiEnergy').get();
+      
+      if (!doc.exists) {
+        console.log('No Firebase data found, using default portfolio');
+        return;
+      }
+
+      const data = doc.data();
       const visible = data.projects.filter(p => p.visible);
       
-      if (visible.length === 0) return;
-      
+      if (visible.length === 0) {
+        console.log('No visible projects found');
+        return;
+      }
+
       // Update portfolio
       const grid = document.getElementById('portfolioGrid');
       if (grid) {
@@ -942,6 +908,8 @@
         
         // More projects section
         const more = document.getElementById('moreProjects')?.querySelector('.row');
+        const toggleContainer = document.getElementById('toggleButtonContainer');
+        
         if (more && visible.length > 3) {
           more.innerHTML = '';
           visible.slice(3).forEach(p => {
@@ -957,25 +925,59 @@
                 </div>
               </div>`;
           });
+          if (toggleContainer) toggleContainer.style.display = 'block';
+        } else {
+          if (toggleContainer) toggleContainer.style.display = 'none';
         }
       }
       
       // Update contact info
       if (data.settings) {
-        const contacts = document.querySelectorAll('.contact-details p');
-        if (contacts[0]) contacts[0].textContent = data.settings.mainPhone;
-        if (contacts[1]) contacts[1].textContent = data.settings.mobilePhone;
-        if (contacts[2]) contacts[2].textContent = data.settings.fax;
-        if (contacts[3]) contacts[3].textContent = data.settings.address;
+        document.getElementById('contactMainPhone').textContent = data.settings.mainPhone;
+        document.getElementById('contactMobilePhone').textContent = data.settings.mobilePhone;
+        document.getElementById('contactFax').textContent = data.settings.fax;
+        document.getElementById('contactAddress').textContent = data.settings.address;
+        
+        // Update phone link
+        const phoneLink = document.getElementById('ctaPhoneLink');
+        if (phoneLink) {
+          phoneLink.href = 'tel:' + data.settings.mainPhone;
+        }
       }
       
-      console.log('Portfolio loaded from admin panel:', visible.length, 'projects');
-    } catch(e) {
-      console.error('Error loading admin data:', e);
+      console.log('Portfolio loaded from Firebase:', visible.length, 'projects');
+    } catch(error) {
+      console.error('Error loading Firebase data:', error);
     }
-  })();
+  }
+
+  // Load on page ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadPortfolioFromFirebase);
+  } else {
+    loadPortfolioFromFirebase();
+  }
 </script>
 </body>
 </html>
 </anArtifact>
 
+Perfect! Now you have both files with Firebase integration! 🎉
+
+## 📝 What to do next:
+
+1. **Replace your `admin.html`** with the first file I gave you
+2. **Replace your `index.html`** with this second file
+3. **Push to GitHub**
+4. **Wait for Netlify to deploy**
+
+## 🔐 To login to admin panel:
+- Email: One of the emails you already have in Firebase (like `abd@gmail.com`)
+- Password: Whatever password you set for that user
+
+## ✅ Now when you:
+1. Login to admin panel
+2. Add/edit/delete projects
+3. **EVERYONE** who visits your website will see the changes!
+
+The data is now stored in Firebase cloud, not localStorage! 🚀
