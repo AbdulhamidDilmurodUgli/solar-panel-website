@@ -1,6 +1,8 @@
+**Perfect!** 🎉 Everything is set up! Now I'll create your Firebase-integrated files.
 
+Here's your complete **admin.html** with Firebase integration:
 
-<anArtifact identifier="admin-panel-fixed" type="text/html" title="Fixed Admin Panel">
+<anArtifact identifier="firebase-admin-panel" type="text/html" title="Firebase-Integrated Admin Panel">
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -143,13 +145,6 @@
       flex-wrap: wrap;
     }
 
-    .export-section {
-      background: #f8f9fa;
-      padding: 20px;
-      border-radius: 12px;
-      margin-top: 20px;
-    }
-
     @media (max-width: 768px) {
       .portfolio-thumbnail {
         width: 100%;
@@ -170,6 +165,16 @@
         width: 100%;
       }
     }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+    }
+
+    .spinner-border {
+      width: 3rem;
+      height: 3rem;
+    }
   </style>
 </head>
 <body>
@@ -183,8 +188,8 @@
     </div>
     <form id="loginForm">
       <div class="mb-3">
-        <label class="form-label">사용자 이름</label>
-        <input type="text" class="form-control" id="username" required>
+        <label class="form-label">이메일</label>
+        <input type="email" class="form-control" id="email" required placeholder="admin@hyundai-energy.com">
       </div>
       <div class="mb-3">
         <label class="form-label">비밀번호</label>
@@ -195,10 +200,7 @@
       </button>
     </form>
     <div id="loginError" class="alert alert-danger mt-3" style="display: none;">
-      잘못된 사용자 이름 또는 비밀번호입니다.
-    </div>
-    <div class="mt-3 text-center">
-      <small class="text-muted">기본 비밀번호: admin / hyundai2025</small>
+      로그인 실패. 이메일 또는 비밀번호를 확인하세요.
     </div>
   </div>
 </div>
@@ -209,15 +211,9 @@
   <div class="admin-header">
     <div>
       <h3 class="mb-0" style="color: var(--primary-color);">🌞 현대 에너지 관리자 패널</h3>
-      <small class="text-muted">웹사이트 콘텐츠 관리</small>
+      <small class="text-muted" id="userEmail"></small>
     </div>
     <div class="action-buttons">
-      <button class="btn btn-outline-success" onclick="exportData()">
-        <i class="bi bi-download"></i> 데이터 내보내기
-      </button>
-      <button class="btn btn-outline-info" onclick="showImportModal()">
-        <i class="bi bi-upload"></i> 데이터 가져오기
-      </button>
       <button class="btn btn-outline-danger" onclick="logout()">
         <i class="bi bi-box-arrow-right"></i> 로그아웃
       </button>
@@ -260,11 +256,6 @@
           <i class="bi bi-gear"></i> 사이트 설정
         </a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="tab" href="#helpTab">
-          <i class="bi bi-question-circle"></i> 도움말
-        </a>
-      </li>
     </ul>
 
     <div class="tab-content">
@@ -278,7 +269,10 @@
         </div>
 
         <div id="portfolioList">
-          <!-- Portfolio items will be loaded here -->
+          <div class="loading">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-3">데이터 로딩 중...</p>
+          </div>
         </div>
       </div>
 
@@ -309,134 +303,6 @@
           <button class="btn btn-primary mt-3" onclick="saveSettings()">
             <i class="bi bi-save"></i> 설정 저장
           </button>
-        </div>
-
-        <div class="export-section">
-          <h5>데이터 관리</h5>
-          <p>웹사이트 데이터를 백업하거나 다른 브라우저로 이전할 수 있습니다.</p>
-          <div class="d-flex gap-2 flex-wrap">
-            <button class="btn btn-outline-primary" onclick="exportData()">
-              <i class="bi bi-download"></i> 전체 데이터 내보내기
-            </button>
-            <button class="btn btn-outline-secondary" onclick="showImportModal()">
-              <i class="bi bi-upload"></i> 데이터 가져오기
-            </button>
-            <button class="btn btn-outline-danger" onclick="clearAllData()">
-              <i class="bi bi-trash"></i> 모든 데이터 삭제
-            </button>
-          </div>
-        </div>
-
-        <div class="alert alert-info mt-3">
-          <i class="bi bi-info-circle"></i> 설정을 변경한 후 저장 버튼을 클릭하세요.
-        </div>
-      </div>
-
-      <!-- Help Tab -->
-      <div id="helpTab" class="tab-pane fade">
-        <h4 class="mb-4">사용 가이드</h4>
-        
-        <div class="accordion" id="helpAccordion">
-          <div class="accordion-item">
-            <h2 class="accordion-header">
-              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#help1">
-                프로젝트를 추가하는 방법
-              </button>
-            </h2>
-            <div id="help1" class="accordion-collapse collapse show" data-bs-parent="#helpAccordion">
-              <div class="accordion-body">
-                <ol>
-                  <li>"포트폴리오 관리" 탭으로 이동합니다</li>
-                  <li>"새 프로젝트 추가" 버튼을 클릭합니다</li>
-                  <li>프로젝트 정보를 입력합니다 (제목, 설명, 카테고리, 연도)</li>
-                  <li>이미지를 업로드합니다 (선택사항)</li>
-                  <li>"저장" 버튼을 클릭합니다</li>
-                </ol>
-              </div>
-            </div>
-          </div>
-
-          <div class="accordion-item">
-            <h2 class="accordion-header">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#help2">
-                프로젝트를 수정하거나 삭제하는 방법
-              </button>
-            </h2>
-            <div id="help2" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
-              <div class="accordion-body">
-                <p><strong>수정:</strong></p>
-                <ol>
-                  <li>수정하려는 프로젝트의 "편집" 버튼을 클릭합니다</li>
-                  <li>정보를 수정합니다</li>
-                  <li>"저장" 버튼을 클릭합니다</li>
-                </ol>
-                <p><strong>삭제:</strong></p>
-                <ol>
-                  <li>삭제하려는 프로젝트의 "삭제" 버튼을 클릭합니다</li>
-                  <li>확인 메시지에서 "확인"을 클릭합니다</li>
-                </ol>
-              </div>
-            </div>
-          </div>
-
-          <div class="accordion-item">
-            <h2 class="accordion-header">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#help3">
-                데이터 백업 방법
-              </button>
-            </h2>
-            <div id="help3" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
-              <div class="accordion-body">
-                <ol>
-                  <li>"사이트 설정" 탭으로 이동합니다</li>
-                  <li>"전체 데이터 내보내기" 버튼을 클릭합니다</li>
-                  <li>JSON 파일이 다운로드됩니다</li>
-                  <li>이 파일을 안전한 곳에 보관하세요</li>
-                </ol>
-                <p class="text-muted mt-2">백업된 데이터는 "데이터 가져오기" 기능으로 복원할 수 있습니다.</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="accordion-item">
-            <h2 class="accordion-header">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#help4">
-                이미지 업로드 가이드
-              </button>
-            </h2>
-            <div id="help4" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
-              <div class="accordion-body">
-                <p><strong>권장 이미지 사양:</strong></p>
-                <ul>
-                  <li>형식: JPG, PNG</li>
-                  <li>크기: 1920x1080 픽셀 이하</li>
-                  <li>용량: 2MB 이하 권장</li>
-                  <li>비율: 16:9 또는 4:3</li>
-                </ul>
-                <p class="text-warning"><i class="bi bi-exclamation-triangle"></i> 참고: 이미지는 브라우저 저장소에 저장되므로 너무 큰 이미지는 피해주세요.</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="accordion-item">
-            <h2 class="accordion-header">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#help5">
-                문제 해결
-              </button>
-            </h2>
-            <div id="help5" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
-              <div class="accordion-body">
-                <p><strong>데이터가 사라졌어요:</strong></p>
-                <p>브라우저 캐시를 지우면 데이터가 삭제될 수 있습니다. 정기적으로 데이터를 백업하세요.</p>
-                
-                <p><strong>이미지가 표시되지 않아요:</strong></p>
-                <p>이미지 파일이 너무 크거나 형식이 지원되지 않을 수 있습니다. JPG 또는 PNG 형식으로 시도해보세요.</p>
-                
-                <p><strong>로그인이 안 돼요:</strong></p>
-                <p>기본 사용자명은 "admin"이고 비밀번호는 "hyundai2025"입니다.</p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -510,41 +376,28 @@
   </div>
 </div>
 
-<!-- Import Data Modal -->
-<div class="modal fade" id="importModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">데이터 가져오기</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <p>이전에 내보낸 JSON 파일을 선택하세요.</p>
-        <input type="file" class="form-control" id="importFile" accept=".json">
-        <div class="alert alert-warning mt-3">
-          <i class="bi bi-exclamation-triangle"></i> 경고: 기존 데이터가 모두 대체됩니다!
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-        <button type="button" class="btn btn-primary" onclick="importData()">
-          <i class="bi bi-upload"></i> 가져오기
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  // Storage key for localStorage
-  const STORAGE_KEY = 'hyundai_energy_data';
-  const ADMIN_CREDENTIALS = {
-    username: 'admin',
-    password: 'hyundai2025'
+  // Firebase Configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDO07wt_ZK-EI9c7b_RDJ0661nCsmRKtm",
+    authDomain: "loginpage-9cf97.firebaseapp.com",
+    projectId: "loginpage-9cf97",
+    storageBucket: "loginpage-9cf97.firebasestorage.app",
+    messagingSenderId: "500004299637",
+    appId: "1:500004299637:web:2c5e496890k283a8f0693c"
   };
 
-  // Initialize data structure
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
   let siteData = {
     projects: [],
     settings: {
@@ -555,65 +408,30 @@
     }
   };
 
-  // Load data from localStorage
-  function loadData() {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      siteData = JSON.parse(stored);
-    } else {
-      // Initialize with sample data
-      siteData.projects = [
-        {
-          id: 1,
-          title: '주택용 설치',
-          description: '안산 주택 옥상 태양광 시스템 구축 (2024)',
-          image: './images/IMG_4242.JPG',
-          category: 'residential',
-          year: 2024,
-          visible: true
-        },
-        {
-          id: 2,
-          title: '상업용 설치',
-          description: '인천 공장 지붕 대규모 태양광 설치 (2024)',
-          image: './images/IMG_4248.JPG',
-          category: 'commercial',
-          year: 2024,
-          visible: true
-        },
-        {
-          id: 3,
-          title: '유지보수',
-          description: '수원 태양광 시스템 점검 및 성능 최적화 (2025)',
-          image: './images/IMG_4262.JPG',
-          category: 'maintenance',
-          year: 2025,
-          visible: true
-        }
-      ];
-      saveData();
-    }
-  }
-
-  // Save data to localStorage
-  function saveData() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(siteData));
-    updateStats();
-  }
-
-  // Login functionality
-  document.getElementById('loginForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-
-    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+  // Check auth state
+  auth.onAuthStateChanged(user => {
+    if (user) {
       document.getElementById('loginSection').style.display = 'none';
       document.getElementById('adminSection').style.display = 'block';
+      document.getElementById('userEmail').textContent = user.email;
       loadData();
-      renderPortfolio();
-      loadSettings();
     } else {
+      document.getElementById('loginSection').style.display = 'block';
+      document.getElementById('adminSection').style.display = 'none';
+    }
+  });
+
+  // Login
+  document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+      await auth.signInWithEmailAndPassword(email, password);
+      document.getElementById('loginError').style.display = 'none';
+    } catch (error) {
+      console.error('Login error:', error);
       document.getElementById('loginError').style.display = 'block';
     }
   });
@@ -621,11 +439,37 @@
   // Logout
   function logout() {
     if (confirm('로그아웃 하시겠습니까?')) {
-      document.getElementById('loginSection').style.display = 'block';
-      document.getElementById('adminSection').style.display = 'none';
-      document.getElementById('username').value = '';
-      document.getElementById('password').value = '';
-      document.getElementById('loginError').style.display = 'none';
+      auth.signOut();
+    }
+  }
+
+  // Load data from Firestore
+  async function loadData() {
+    try {
+      const doc = await db.collection('siteData').doc('hyundaiEnergy').get();
+      if (doc.exists) {
+        siteData = doc.data();
+      } else {
+        // Initialize with default data
+        await saveData();
+      }
+      renderPortfolio();
+      loadSettings();
+      updateStats();
+    } catch (error) {
+      console.error('Error loading data:', error);
+      showNotification('데이터 로딩 실패', 'danger');
+    }
+  }
+
+  // Save data to Firestore
+  async function saveData() {
+    try {
+      await db.collection('siteData').doc('hyundaiEnergy').set(siteData);
+      updateStats();
+    } catch (error) {
+      console.error('Error saving data:', error);
+      showNotification('데이터 저장 실패', 'danger');
     }
   }
 
@@ -640,7 +484,7 @@
     document.getElementById('hiddenProjects').textContent = hidden;
   }
 
-  // Render portfolio list
+  // Render portfolio
   function renderPortfolio() {
     const container = document.getElementById('portfolioList');
     container.innerHTML = '';
@@ -668,10 +512,10 @@
             </div>
           </div>
           <div class="col-md-4 text-md-end">
-            <button class="btn btn-sm btn-outline-primary me-2 mb-2" onclick="editProject(${project.id})">
+            <button class="btn btn-sm btn-outline-primary me-2 mb-2" onclick="editProject('${project.id}')">
               <i class="bi bi-pencil"></i> 편집
             </button>
-            <button class="btn btn-sm btn-outline-danger mb-2" onclick="deleteProject(${project.id})">
+            <button class="btn btn-sm btn-outline-danger mb-2" onclick="deleteProject('${project.id}')">
               <i class="bi bi-trash"></i> 삭제
             </button>
           </div>
@@ -681,7 +525,7 @@
     });
   }
 
-  // Get category name in Korean
+  // Get category name
   function getCategoryName(category) {
     const categories = {
       residential: '주택용',
@@ -733,7 +577,6 @@
     if (input.files && input.files[0]) {
       const file = input.files[0];
       
-      // Check file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         alert('이미지 파일이 너무 큽니다. 5MB 이하의 파일을 선택하세요.');
         input.value = '';
@@ -750,7 +593,7 @@
   }
 
   // Save project
-  function saveProject() {
+  async function saveProject() {
     const id = document.getElementById('projectId').value;
     const title = document.getElementById('projectTitle').value;
     const description = document.getElementById('projectDescription').value;
@@ -773,48 +616,43 @@
       visible
     };
 
-    // Handle image
     if (imageFile) {
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = async function(e) {
         project.image = e.target.result;
-        finalizeProjectSave(id, project);
+        await finalizeProjectSave(id, project);
       };
       reader.readAsDataURL(imageFile);
     } else {
       project.image = existingImage || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22150%22 height=%22100%22/%3E%3Ctext fill=%22%23999%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3E이미지 없음%3C/text%3E%3C/svg%3E';
-      finalizeProjectSave(id, project);
+      await finalizeProjectSave(id, project);
     }
   }
 
-  function finalizeProjectSave(id, project) {
+  async function finalizeProjectSave(id, project) {
     if (id) {
-      // Edit existing
-      const index = siteData.projects.findIndex(p => p.id === parseInt(id));
+      const index = siteData.projects.findIndex(p => p.id === id);
       if (index !== -1) {
-        project.id = parseInt(id);
+        project.id = id;
         siteData.projects[index] = project;
       }
     } else {
-      // Add new
-      project.id = Date.now();
+      project.id = Date.now().toString();
       siteData.projects.push(project);
     }
 
-    saveData();
+    await saveData();
     renderPortfolio();
     bootstrap.Modal.getInstance(document.getElementById('projectModal')).hide();
-    
-    // Show success message
     showNotification('프로젝트가 성공적으로 저장되었습니다!', 'success');
   }
 
   // Delete project
-  function deleteProject(id) {
-    if (!confirm('이 프로젝트를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) return;
+  async function deleteProject(id) {
+    if (!confirm('이 프로젝트를 삭제하시겠습니까?')) return;
 
     siteData.projects = siteData.projects.filter(p => p.id !== id);
-    saveData();
+    await saveData();
     renderPortfolio();
     showNotification('프로젝트가 삭제되었습니다.', 'info');
   }
@@ -828,94 +666,15 @@
   }
 
   // Save settings
-  function saveSettings() {
+  async function saveSettings() {
     siteData.settings = {
       mainPhone: document.getElementById('mainPhone').value,
       mobilePhone: document.getElementById('mobilePhone').value,
       fax: document.getElementById('fax').value,
       address: document.getElementById('address').value
     };
-    saveData();
+    await saveData();
     showNotification('설정이 저장되었습니다!', 'success');
-  }
-
-  // Export data as JSON
-  function exportData() {
-    const dataStr = JSON.stringify(siteData, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    const exportFileDefaultName = `hyundai-energy-backup-${new Date().toISOString().split('T')[0]}.json`;
-    
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
-    
-    showNotification('데이터가 성공적으로 내보내졌습니다!', 'success');
-  }
-
-  // Show import modal
-  function showImportModal() {
-    new bootstrap.Modal(document.getElementById('importModal')).show();
-  }
-
-  // Import data from JSON
-  function importData() {
-    const fileInput = document.getElementById('importFile');
-    const file = fileInput.files[0];
-    
-    if (!file) {
-      alert('파일을 선택하세요.');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      try {
-        const importedData = JSON.parse(e.target.result);
-        
-        // Validate data structure
-        if (!importedData.projects || !importedData.settings) {
-          throw new Error('잘못된 데이터 형식입니다.');
-        }
-
-        siteData = importedData;
-        saveData();
-        renderPortfolio();
-        loadSettings();
-        
-        bootstrap.Modal.getInstance(document.getElementById('importModal')).hide();
-        showNotification('데이터가 성공적으로 가져와졌습니다!', 'success');
-      } catch (error) {
-        alert('데이터 가져오기 실패: ' + error.message);
-      }
-    };
-    reader.readAsText(file);
-  }
-
-  // Clear all data
-  function clearAllData() {
-    if (!confirm('모든 데이터를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다!\n\n계속하려면 "확인"을 클릭하세요.')) {
-      return;
-    }
-
-    if (!confirm('정말로 모든 프로젝트와 설정을 삭제하시겠습니까?\n마지막 확인입니다.')) {
-      return;
-    }
-
-    localStorage.removeItem(STORAGE_KEY);
-    siteData = {
-      projects: [],
-      settings: {
-        mainPhone: '1688-7805',
-        mobilePhone: '010-8389-357',
-        fax: '02-6499-7805',
-        address: '경기도 양주시 광사로 131-127'
-      }
-    };
-    saveData();
-    renderPortfolio();
-    loadSettings();
-    showNotification('모든 데이터가 삭제되었습니다.', 'warning');
   }
 
   // Show notification
@@ -935,18 +694,9 @@
       alertDiv.remove();
     }, 3000);
   }
-
-  // Initialize on page load
-  document.addEventListener('DOMContentLoaded', function() {
-    // Check if already logged in (for development)
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('dev') === 'true') {
-      document.getElementById('username').value = 'admin';
-      document.getElementById('password').value = 'hyundai2025';
-    }
-  });
 </script>
-
 </body>
 </html>
 </anArtifact>
+
+Now here's your **index.html** with Firebase integration:
