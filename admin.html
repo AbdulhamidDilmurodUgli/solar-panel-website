@@ -1,8 +1,14 @@
-You're right! The app nickname is `hyundai-e-energy`, not loginpage. But that's fine - the important thing is the **Firebase config** which you already gave me.
+I can see the error clearly now! The problem is:
 
-Now let me create the **CORRECTED files** with the right API key:
+**"Error saving data: FirebaseError: Property array contains an invalid nested entity"**
 
-<anArtifact identifier="corrected-admin-firebase" type="text/html" title="Corrected Admin Panel with Right API Key">
+This happens because Firebase Firestore has limits on nested data structures. The issue is likely with:
+1. **Large base64 images** (too big for Firestore)
+2. **Nested object structure**
+
+Let me create a **completely fixed version** that stores projects in a better way:
+
+<anArtifact identifier="fixed-admin-firebase-structure" type="text/html" title="Fixed Admin Panel - Better Data Structure">
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -332,9 +338,9 @@ Now let me create the **CORRECTED files** with the right API key:
           </div>
 
           <div class="mb-3">
-            <label class="form-label">이미지</label>
-            <input type="file" class="form-control" id="projectImage" accept="image/*" onchange="previewImage(this)">
-            <small class="text-muted">권장: JPG/PNG, 1920x1080px 이하, 2MB 이하</small>
+            <label class="form-label">이미지 URL</label>
+            <input type="url" class="form-control" id="projectImageUrl" placeholder="https://example.com/image.jpg">
+            <small class="text-muted">이미지 URL을 입력하세요 (예: 이미 업로드된 이미지의 링크)</small>
             <img id="imagePreview" class="image-preview" style="display: none;">
             <input type="hidden" id="existingImage">
           </div>
@@ -383,7 +389,7 @@ Now let me create the **CORRECTED files** with the right API key:
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  // Firebase Configuration - CORRECTED API KEY
+  // Firebase Configuration
   const firebaseConfig = {
     apiKey: "AIzaSyDQC7wt_ZK-EIk9c7b_RDJ066lnGsmRKHw",
     authDomain: "loginpage-9cf97.firebaseapp.com",
@@ -398,14 +404,12 @@ Now let me create the **CORRECTED files** with the right API key:
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  let siteData = {
-    projects: [],
-    settings: {
-      mainPhone: '1688-7805',
-      mobilePhone: '010-8389-357',
-      fax: '02-6499-7805',
-      address: '경기도 양주시 광사로 131-127'
-    }
+  let projects = [];
+  let settings = {
+    mainPhone: '1688-7805',
+    mobilePhone: '010-8389-357',
+    fax: '02-6499-7805',
+    address: '경기도 양주시 광사로 131-127'
   };
 
   // Check auth state
@@ -443,40 +447,35 @@ Now let me create the **CORRECTED files** with the right API key:
     }
   }
 
-  // Load data from Firestore
+  // Load data from Firestore - FIXED: Using subcollection
   async function loadData() {
     try {
-      const doc = await db.collection('siteData').doc('hyundaiEnergy').get();
-      if (doc.exists) {
-        siteData = doc.data();
-      } else {
-        // Initialize with default data
-        await saveData();
+      // Load projects from subcollection
+      const projectsSnapshot = await db.collection('projects').orderBy('year', 'desc').get();
+      projects = projectsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+      // Load settings
+      const settingsDoc = await db.collection('settings').doc('site').get();
+      if (settingsDoc.exists) {
+        settings = settingsDoc.data();
       }
+
       renderPortfolio();
       loadSettings();
       updateStats();
     } catch (error) {
       console.error('Error loading data:', error);
-      showNotification('데이터 로딩 실패', 'danger');
-    }
-  }
-
-  // Save data to Firestore
-  async function saveData() {
-    try {
-      await db.collection('siteData').doc('hyundaiEnergy').set(siteData);
-      updateStats();
-    } catch (error) {
-      console.error('Error saving data:', error);
-      showNotification('데이터 저장 실패', 'danger');
+      showNotification('데이터 로딩 실패: ' + error.message, 'danger');
     }
   }
 
   // Update statistics
   function updateStats() {
-    const total = siteData.projects.length;
-    const visible = siteData.projects.filter(p => p.visible).length;
+    const total = projects.length;
+    const visible = projects.filter(p => p.visible).length;
     const hidden = total - visible;
 
     document.getElementById('totalProjects').textContent = total;
@@ -489,18 +488,18 @@ Now let me create the **CORRECTED files** with the right API key:
     const container = document.getElementById('portfolioList');
     container.innerHTML = '';
 
-    if (siteData.projects.length === 0) {
+    if (projects.length === 0) {
       container.innerHTML = '<div class="alert alert-info"><i class="bi bi-info-circle"></i> 프로젝트가 없습니다. 새 프로젝트를 추가하세요.</div>';
       return;
     }
 
-    siteData.projects.forEach(project => {
+    projects.forEach(project => {
       const item = document.createElement('div');
       item.className = 'portfolio-item';
       item.innerHTML = `
         <div class="row align-items-center">
           <div class="col-md-2 mb-3 mb-md-0">
-            <img src="${project.image}" class="portfolio-thumbnail w-100" alt="${project.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22150%22 height=%22100%22/%3E%3Ctext fill=%22%23999%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3E이미지 없음%3C/text%3E%3C/svg%3E'">
+            <img src="${project.image || 'https://via.placeholder.com/150x100?text=No+Image'}" class="portfolio-thumbnail w-100" alt="${project.title}">
           </div>
           <div class="col-md-6 mb-3 mb-md-0">
             <h5 class="mb-1">${project.title}</h5>
@@ -552,17 +551,18 @@ Now let me create the **CORRECTED files** with the right API key:
 
   // Edit project
   function editProject(id) {
-    const project = siteData.projects.find(p => p.id === id);
+    const project = projects.find(p => p.id === id);
     if (!project) return;
 
     document.getElementById('modalTitle').textContent = '프로젝트 편집';
     document.getElementById('projectId').value = project.id;
     document.getElementById('projectTitle').value = project.title;
     document.getElementById('projectDescription').value = project.description;
+    document.getElementById('projectImageUrl').value = project.image || '';
     document.getElementById('projectCategory').value = project.category;
     document.getElementById('projectYear').value = project.year;
     document.getElementById('projectVisible').checked = project.visible;
-    document.getElementById('existingImage').value = project.image;
+    document.getElementById('existingImage').value = project.image || '';
     
     if (project.image) {
       document.getElementById('imagePreview').src = project.image;
@@ -572,36 +572,15 @@ Now let me create the **CORRECTED files** with the right API key:
     new bootstrap.Modal(document.getElementById('projectModal')).show();
   }
 
-  // Preview image
-  function previewImage(input) {
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-      
-      if (file.size > 5 * 1024 * 1024) {
-        alert('이미지 파일이 너무 큽니다. 5MB 이하의 파일을 선택하세요.');
-        input.value = '';
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        document.getElementById('imagePreview').src = e.target.result;
-        document.getElementById('imagePreview').style.display = 'block';
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-
-  // Save project
+  // Save project - FIXED: Using subcollection
   async function saveProject() {
     const id = document.getElementById('projectId').value;
     const title = document.getElementById('projectTitle').value;
     const description = document.getElementById('projectDescription').value;
+    const imageUrl = document.getElementById('projectImageUrl').value;
     const category = document.getElementById('projectCategory').value;
     const year = document.getElementById('projectYear').value;
     const visible = document.getElementById('projectVisible').checked;
-    const imageFile = document.getElementById('projectImage').files[0];
-    const existingImage = document.getElementById('existingImage').value;
 
     if (!title || !description) {
       alert('제목과 설명을 입력하세요.');
@@ -611,70 +590,71 @@ Now let me create the **CORRECTED files** with the right API key:
     const project = {
       title,
       description,
+      image: imageUrl || './images/IMG_4242.JPG',
       category,
       year: parseInt(year),
-      visible
+      visible,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     };
 
-    if (imageFile) {
-      const reader = new FileReader();
-      reader.onload = async function(e) {
-        project.image = e.target.result;
-        await finalizeProjectSave(id, project);
-      };
-      reader.readAsDataURL(imageFile);
-    } else {
-      project.image = existingImage || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22150%22 height=%22100%22/%3E%3Ctext fill=%22%23999%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3E이미지 없음%3C/text%3E%3C/svg%3E';
-      await finalizeProjectSave(id, project);
-    }
-  }
-
-  async function finalizeProjectSave(id, project) {
-    if (id) {
-      const index = siteData.projects.findIndex(p => p.id === id);
-      if (index !== -1) {
-        project.id = id;
-        siteData.projects[index] = project;
+    try {
+      if (id) {
+        // Update existing project
+        await db.collection('projects').doc(id).update(project);
+        showNotification('프로젝트가 업데이트되었습니다!', 'success');
+      } else {
+        // Add new project
+        await db.collection('projects').add(project);
+        showNotification('프로젝트가 추가되었습니다!', 'success');
       }
-    } else {
-      project.id = Date.now().toString();
-      siteData.projects.push(project);
-    }
 
-    await saveData();
-    renderPortfolio();
-    bootstrap.Modal.getInstance(document.getElementById('projectModal')).hide();
-    showNotification('프로젝트가 성공적으로 저장되었습니다!', 'success');
+      await loadData();
+      bootstrap.Modal.getInstance(document.getElementById('projectModal')).hide();
+    } catch (error) {
+      console.error('Error saving project:', error);
+      showNotification('저장 실패: ' + error.message, 'danger');
+    }
   }
 
-  // Delete project
+  // Delete project - FIXED: Using subcollection
   async function deleteProject(id) {
     if (!confirm('이 프로젝트를 삭제하시겠습니까?')) return;
 
-    siteData.projects = siteData.projects.filter(p => p.id !== id);
-    await saveData();
-    renderPortfolio();
-    showNotification('프로젝트가 삭제되었습니다.', 'info');
+    try {
+      await db.collection('projects').doc(id).delete();
+      await loadData();
+      showNotification('프로젝트가 삭제되었습니다.', 'info');
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      showNotification('삭제 실패: ' + error.message, 'danger');
+    }
   }
 
   // Load settings
   function loadSettings() {
-    document.getElementById('mainPhone').value = siteData.settings.mainPhone;
-    document.getElementById('mobilePhone').value = siteData.settings.mobilePhone;
-    document.getElementById('fax').value = siteData.settings.fax;
-    document.getElementById('address').value = siteData.settings.address;
+    document.getElementById('mainPhone').value = settings.mainPhone;
+    document.getElementById('mobilePhone').value = settings.mobilePhone;
+    document.getElementById('fax').value = settings.fax;
+    document.getElementById('address').value = settings.address;
   }
 
-  // Save settings
+  // Save settings - FIXED: Separate document
   async function saveSettings() {
-    siteData.settings = {
+    const newSettings = {
       mainPhone: document.getElementById('mainPhone').value,
       mobilePhone: document.getElementById('mobilePhone').value,
       fax: document.getElementById('fax').value,
       address: document.getElementById('address').value
     };
-    await saveData();
-    showNotification('설정이 저장되었습니다!', 'success');
+
+    try {
+      await db.collection('settings').doc('site').set(newSettings);
+      settings = newSettings;
+      showNotification('설정이 저장되었습니다!', 'success');
+    } catch (error) {
+      console.error('Error saving settings:', error);
+      showNotification('설정 저장 실패: ' + error.message, 'danger');
+    }
   }
 
   // Show notification
@@ -694,22 +674,26 @@ Now let me create the **CORRECTED files** with the right API key:
       alertDiv.remove();
     }, 3000);
   }
+
+  // Preview image from URL
+  document.getElementById('projectImageUrl')?.addEventListener('input', function(e) {
+    const url = e.target.value;
+    if (url) {
+      document.getElementById('imagePreview').src = url;
+      document.getElementById('imagePreview').style.display = 'block';
+    }
+  });
 </script>
 </body>
 </html>
 </anArtifact>
 
-Perfect! Now **download this corrected admin.html** file and:
+**Key changes:**
 
-1. Replace your current `admin.html` with this one
-2. Do the SAME fix in your `index.html` (just change the apiKey line)
-3. Push to GitHub
-4. Try logging in!
+1. **No more nested arrays** - Projects are now stored as separate documents in a `projects` collection
+2. **No more base64 images** - Now uses image URLs instead
+3. **Settings in separate document** - In `settings` collection
 
-Use these credentials:
-- Email: `test@test.com`
-- Password: `Test123456`
+**Download this file and replace your admin.html!**
 
-(Or create a new user in Firebase Authentication if you haven't already!)
-
-Should work now! 🎉
+This should fix all the Firebase errors! 🎉
