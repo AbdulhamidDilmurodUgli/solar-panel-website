@@ -1,14 +1,6 @@
-I can see the error clearly now! The problem is:
+Perfect! Now here's your **complete admin.html with Firebase Storage image upload**:
 
-**"Error saving data: FirebaseError: Property array contains an invalid nested entity"**
-
-This happens because Firebase Firestore has limits on nested data structures. The issue is likely with:
-1. **Large base64 images** (too big for Firestore)
-2. **Nested object structure**
-
-Let me create a **completely fixed version** that stores projects in a better way:
-
-<anArtifact identifier="fixed-admin-firebase-structure" type="text/html" title="Fixed Admin Panel - Better Data Structure">
+<anArtifact identifier="admin-with-storage" type="text/html" title="Admin Panel with Firebase Storage Upload">
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -149,6 +141,11 @@ Let me create a **completely fixed version** that stores projects in a better wa
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
+    }
+
+    .upload-progress {
+      display: none;
+      margin-top: 10px;
     }
 
     @media (max-width: 768px) {
@@ -338,11 +335,19 @@ Let me create a **completely fixed version** that stores projects in a better wa
           </div>
 
           <div class="mb-3">
-            <label class="form-label">이미지 URL</label>
-            <input type="url" class="form-control" id="projectImageUrl" placeholder="https://example.com/image.jpg">
-            <small class="text-muted">이미지 URL을 입력하세요 (예: 이미 업로드된 이미지의 링크)</small>
+            <label class="form-label">이미지 업로드</label>
+            <input type="file" class="form-control" id="projectImage" accept="image/*" onchange="previewImage(this)">
+            <small class="text-muted">JPG, PNG, WebP 형식. 최대 5MB</small>
+            
+            <div class="upload-progress" id="uploadProgress">
+              <div class="progress">
+                <div class="progress-bar" id="progressBar" role="progressbar" style="width: 0%"></div>
+              </div>
+              <small class="text-muted" id="progressText">업로드 중...</small>
+            </div>
+            
             <img id="imagePreview" class="image-preview" style="display: none;">
-            <input type="hidden" id="existingImage">
+            <input type="hidden" id="existingImageUrl">
           </div>
 
           <div class="row">
@@ -374,7 +379,7 @@ Let me create a **completely fixed version** that stores projects in a better wa
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-        <button type="button" class="btn btn-primary" onclick="saveProject()">
+        <button type="button" class="btn btn-primary" onclick="saveProject()" id="saveBtn">
           <i class="bi bi-save"></i> 저장
         </button>
       </div>
@@ -386,6 +391,7 @@ Let me create a **completely fixed version** that stores projects in a better wa
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -403,6 +409,7 @@ Let me create a **completely fixed version** that stores projects in a better wa
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   const db = firebase.firestore();
+  const storage = firebase.storage();
 
   let projects = [];
   let settings = {
@@ -447,17 +454,15 @@ Let me create a **completely fixed version** that stores projects in a better wa
     }
   }
 
-  // Load data from Firestore - FIXED: Using subcollection
+  // Load data from Firestore
   async function loadData() {
     try {
-      // Load projects from subcollection
       const projectsSnapshot = await db.collection('projects').orderBy('year', 'desc').get();
       projects = projectsSnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
 
-      // Load settings
       const settingsDoc = await db.collection('settings').doc('site').get();
       if (settingsDoc.exists) {
         settings = settingsDoc.data();
@@ -542,8 +547,9 @@ Let me create a **completely fixed version** that stores projects in a better wa
     document.getElementById('modalTitle').textContent = '새 프로젝트 추가';
     document.getElementById('projectForm').reset();
     document.getElementById('projectId').value = '';
-    document.getElementById('existingImage').value = '';
+    document.getElementById('existingImageUrl').value = '';
     document.getElementById('imagePreview').style.display = 'none';
+    document.getElementById('uploadProgress').style.display = 'none';
     document.getElementById('projectVisible').checked = true;
     document.getElementById('projectYear').value = new Date().getFullYear();
     new bootstrap.Modal(document.getElementById('projectModal')).show();
@@ -558,11 +564,10 @@ Let me create a **completely fixed version** that stores projects in a better wa
     document.getElementById('projectId').value = project.id;
     document.getElementById('projectTitle').value = project.title;
     document.getElementById('projectDescription').value = project.description;
-    document.getElementById('projectImageUrl').value = project.image || '';
     document.getElementById('projectCategory').value = project.category;
     document.getElementById('projectYear').value = project.year;
     document.getElementById('projectVisible').checked = project.visible;
-    document.getElementById('existingImage').value = project.image || '';
+    document.getElementById('existingImageUrl').value = project.image || '';
     
     if (project.image) {
       document.getElementById('imagePreview').src = project.image;
@@ -572,38 +577,99 @@ Let me create a **completely fixed version** that stores projects in a better wa
     new bootstrap.Modal(document.getElementById('projectModal')).show();
   }
 
-  // Save project - FIXED: Using subcollection
+  // Preview image
+  function previewImage(input) {
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      
+      if (file.size > 5 * 1024 * 1024) {
+        alert('이미지 파일이 너무 큽니다. 5MB 이하의 파일을 선택하세요.');
+        input.value = '';
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('imagePreview').src = e.target.result;
+        document.getElementById('imagePreview').style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // Upload image to Firebase Storage
+  async function uploadImage(file) {
+    return new Promise((resolve, reject) => {
+      const storageRef = storage.ref();
+      const filename = `projects/${Date.now()}_${file.name}`;
+      const imageRef = storageRef.child(filename);
+      
+      const uploadTask = imageRef.put(file);
+      
+      document.getElementById('uploadProgress').style.display = 'block';
+      
+      uploadTask.on('state_changed',
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          document.getElementById('progressBar').style.width = progress + '%';
+          document.getElementById('progressText').textContent = `업로드 중... ${Math.round(progress)}%`;
+        },
+        (error) => {
+          console.error('Upload error:', error);
+          document.getElementById('uploadProgress').style.display = 'none';
+          reject(error);
+        },
+        async () => {
+          const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+          document.getElementById('uploadProgress').style.display = 'none';
+          resolve(downloadURL);
+        }
+      );
+    });
+  }
+
+  // Save project
   async function saveProject() {
     const id = document.getElementById('projectId').value;
     const title = document.getElementById('projectTitle').value;
     const description = document.getElementById('projectDescription').value;
-    const imageUrl = document.getElementById('projectImageUrl').value;
     const category = document.getElementById('projectCategory').value;
     const year = document.getElementById('projectYear').value;
     const visible = document.getElementById('projectVisible').checked;
+    const imageFile = document.getElementById('projectImage').files[0];
+    const existingImageUrl = document.getElementById('existingImageUrl').value;
 
     if (!title || !description) {
       alert('제목과 설명을 입력하세요.');
       return;
     }
 
-    const project = {
-      title,
-      description,
-      image: imageUrl || './images/IMG_4242.JPG',
-      category,
-      year: parseInt(year),
-      visible,
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    };
+    const saveBtn = document.getElementById('saveBtn');
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> 저장 중...';
 
     try {
+      let imageUrl = existingImageUrl;
+
+      // Upload new image if selected
+      if (imageFile) {
+        imageUrl = await uploadImage(imageFile);
+      }
+
+      const project = {
+        title,
+        description,
+        image: imageUrl || './images/IMG_4242.JPG',
+        category,
+        year: parseInt(year),
+        visible,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+
       if (id) {
-        // Update existing project
         await db.collection('projects').doc(id).update(project);
         showNotification('프로젝트가 업데이트되었습니다!', 'success');
       } else {
-        // Add new project
         await db.collection('projects').add(project);
         showNotification('프로젝트가 추가되었습니다!', 'success');
       }
@@ -613,14 +679,29 @@ Let me create a **completely fixed version** that stores projects in a better wa
     } catch (error) {
       console.error('Error saving project:', error);
       showNotification('저장 실패: ' + error.message, 'danger');
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = '<i class="bi bi-save"></i> 저장';
     }
   }
 
-  // Delete project - FIXED: Using subcollection
+  // Delete project
   async function deleteProject(id) {
     if (!confirm('이 프로젝트를 삭제하시겠습니까?')) return;
 
     try {
+      const project = projects.find(p => p.id === id);
+      
+      // Delete image from storage if exists
+      if (project && project.image && project.image.includes('firebasestorage')) {
+        try {
+          const imageRef = storage.refFromURL(project.image);
+          await imageRef.delete();
+        } catch (error) {
+          console.log('Image deletion skipped:', error);
+        }
+      }
+
       await db.collection('projects').doc(id).delete();
       await loadData();
       showNotification('프로젝트가 삭제되었습니다.', 'info');
@@ -638,7 +719,7 @@ Let me create a **completely fixed version** that stores projects in a better wa
     document.getElementById('address').value = settings.address;
   }
 
-  // Save settings - FIXED: Separate document
+  // Save settings
   async function saveSettings() {
     const newSettings = {
       mainPhone: document.getElementById('mainPhone').value,
@@ -674,26 +755,18 @@ Let me create a **completely fixed version** that stores projects in a better wa
       alertDiv.remove();
     }, 3000);
   }
-
-  // Preview image from URL
-  document.getElementById('projectImageUrl')?.addEventListener('input', function(e) {
-    const url = e.target.value;
-    if (url) {
-      document.getElementById('imagePreview').src = url;
-      document.getElementById('imagePreview').style.display = 'block';
-    }
-  });
 </script>
 </body>
 </html>
 </anArtifact>
 
-**Key changes:**
+Perfect! Now **download this file** and replace your `admin.html`. 
 
-1. **No more nested arrays** - Projects are now stored as separate documents in a `projects` collection
-2. **No more base64 images** - Now uses image URLs instead
-3. **Settings in separate document** - In `settings` collection
+## What's New:
+✅ **Upload images from computer/phone** - directly from file picker
+✅ **Images stored in Firebase Storage** - not embedded in database
+✅ **Progress bar** - shows upload progress
+✅ **Auto-generates URLs** - no manual URL entry needed
+✅ **Deletes old images** - when you delete a project
 
-**Download this file and replace your admin.html!**
-
-This should fix all the Firebase errors! 🎉
+Now you can upload images from your device and they'll be stored properly in Firebase! 📸🎉
