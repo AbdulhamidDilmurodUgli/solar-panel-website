@@ -1,6 +1,8 @@
-Here's the complete **index.html** with Firebase integration:
+Now we need to update the **index.html** to read from Firebase!
 
-<anArtifact identifier="firebase-index-html" type="text/html" title="Firebase-Integrated Index.html">
+Let me create the updated index.html that fetches data from Firebase:
+
+<anArtifact identifier="index-firebase-read" type="text/html" title="Index.html - Reading from Firebase">
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -491,6 +493,17 @@ Here's the complete **index.html** with Firebase integration:
       max-height: 3000px;
     }
 
+    .loading-spinner {
+      text-align: center;
+      padding: 40px;
+    }
+
+    .spinner-border {
+      width: 3rem;
+      height: 3rem;
+      color: var(--primary-color);
+    }
+
     /* Mobile-specific optimizations */
     @media (max-width: 768px) {
       .navbar-nav {
@@ -697,48 +710,17 @@ Here's the complete **index.html** with Firebase integration:
 <!-- Portfolio -->
 <section id="portfolio" class="container animate">
   <h2 class="text-center mb-4">포트폴리오</h2>
-  <div class="row g-4" id="portfolioGrid">
-    <div class="col-md-4 portfolio-card">
-      <div class="portfolio-image-container">
-        <img src="./images/IMG_4242.JPG" alt="Portfolio 1">
-        <div class="portfolio-overlay">
-          <i class="bi bi-eye"></i>
-        </div>
-      </div>
-      <div class="portfolio-info">
-        <h5>주택용 설치</h5>
-        <p class="text-muted">안산 주택 옥상 태양광 시스템 구축 (2024)</p>
-      </div>
-    </div>
-    <div class="col-md-4 portfolio-card">
-      <div class="portfolio-image-container">
-        <img src="./images/IMG_4248.JPG" alt="Portfolio 2">
-        <div class="portfolio-overlay">
-          <i class="bi bi-eye"></i>
-        </div>
-      </div>
-      <div class="portfolio-info">
-        <h5>상업용 설치</h5>
-        <p class="text-muted">인천 공장 지붕 대규모 태양광 설치 (2024)</p>
-      </div>
-    </div>
-    <div class="col-md-4 portfolio-card">
-      <div class="portfolio-image-container">
-        <img src="./images/IMG_4262.JPG" alt="Portfolio 3">
-        <div class="portfolio-overlay">
-          <i class="bi bi-eye"></i>
-        </div>
-      </div>
-      <div class="portfolio-info">
-        <h5>유지보수</h5>
-        <p class="text-muted">수원 태양광 시스템 점검 및 성능 최적화 (2025)</p>
-      </div>
+  
+  <div id="portfolioGrid" class="row g-4">
+    <div class="loading-spinner">
+      <div class="spinner-border" role="status"></div>
+      <p class="mt-3">프로젝트 로딩 중...</p>
     </div>
   </div>
 
   <div id="moreProjects" class="collapse-container mt-4">
     <div class="row g-4">
-      <!-- More projects loaded dynamically from Firebase -->
+      <!-- More projects loaded from Firebase -->
     </div>
   </div>
 
@@ -834,7 +816,7 @@ Here's the complete **index.html** with Firebase integration:
     projectId: "loginpage-9cf97",
     storageBucket: "loginpage-9cf97.firebasestorage.app",
     messagingSenderId: "500004299637",
-    appId: "1:500004299637:web:2c5e496890k283a8f0693c"
+    appId: "1:500004299637:web:2c5e4968906283a8f0693c"
   };
 
   // Initialize Firebase
@@ -873,82 +855,81 @@ Here's the complete **index.html** with Firebase integration:
   // Load portfolio from Firebase
   async function loadPortfolioFromFirebase() {
     try {
-      const doc = await db.collection('siteData').doc('hyundaiEnergy').get();
+      // Load projects
+      const projectsSnapshot = await db.collection('projects')
+        .where('visible', '==', true)
+        .orderBy('year', 'desc')
+        .get();
       
-      if (!doc.exists) {
-        console.log('No Firebase data found, using default portfolio');
-        return;
-      }
+      const projects = projectsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
 
-      const data = doc.data();
-      const visible = data.projects.filter(p => p.visible);
-      
-      if (visible.length === 0) {
-        console.log('No visible projects found');
-        return;
-      }
-
-      // Update portfolio
-      const grid = document.getElementById('portfolioGrid');
-      if (grid) {
-        grid.innerHTML = '';
-        visible.slice(0, 3).forEach(p => {
-          grid.innerHTML += `
-            <div class="col-md-4 portfolio-card">
-              <div class="portfolio-image-container">
-                <img src="${p.image}" alt="${p.title}">
-                <div class="portfolio-overlay"><i class="bi bi-eye"></i></div>
-              </div>
-              <div class="portfolio-info">
-                <h5>${p.title}</h5>
-                <p class="text-muted">${p.description}</p>
-              </div>
-            </div>`;
-        });
+      // Load settings
+      const settingsDoc = await db.collection('settings').doc('site').get();
+      if (settingsDoc.exists) {
+        const settings = settingsDoc.data();
+        document.getElementById('contactMainPhone').textContent = settings.mainPhone;
+        document.getElementById('contactMobilePhone').textContent = settings.mobilePhone;
+        document.getElementById('contactFax').textContent = settings.fax;
+        document.getElementById('contactAddress').textContent = settings.address;
         
-        // More projects section
-        const more = document.getElementById('moreProjects')?.querySelector('.row');
-        const toggleContainer = document.getElementById('toggleButtonContainer');
-        
-        if (more && visible.length > 3) {
-          more.innerHTML = '';
-          visible.slice(3).forEach(p => {
-            more.innerHTML += `
-              <div class="col-md-4 portfolio-card">
-                <div class="portfolio-image-container">
-                  <img src="${p.image}" alt="${p.title}">
-                  <div class="portfolio-overlay"><i class="bi bi-eye"></i></div>
-                </div>
-                <div class="portfolio-info">
-                  <h5>${p.title}</h5>
-                  <p class="text-muted">${p.description}</p>
-                </div>
-              </div>`;
-          });
-          if (toggleContainer) toggleContainer.style.display = 'block';
-        } else {
-          if (toggleContainer) toggleContainer.style.display = 'none';
-        }
-      }
-      
-      // Update contact info
-      if (data.settings) {
-        document.getElementById('contactMainPhone').textContent = data.settings.mainPhone;
-        document.getElementById('contactMobilePhone').textContent = data.settings.mobilePhone;
-        document.getElementById('contactFax').textContent = data.settings.fax;
-        document.getElementById('contactAddress').textContent = data.settings.address;
-        
-        // Update phone link
         const phoneLink = document.getElementById('ctaPhoneLink');
         if (phoneLink) {
-          phoneLink.href = 'tel:' + data.settings.mainPhone;
+          phoneLink.href = 'tel:' + settings.mainPhone;
         }
       }
-      
-      console.log('Portfolio loaded from Firebase:', visible.length, 'projects');
+
+      // Render portfolio
+      const grid = document.getElementById('portfolioGrid');
+      const toggleContainer = document.getElementById('toggleButtonContainer');
+
+      if (projects.length === 0) {
+        grid.innerHTML = '<div class="col-12"><div class="alert alert-info text-center">프로젝트가 아직 없습니다.</div></div>';
+        return;
+      }
+
+      // Show first 3 projects
+      grid.innerHTML = '';
+      projects.slice(0, 3).forEach(project => {
+        grid.innerHTML += createProjectCard(project);
+      });
+
+      // Show remaining projects in "more" section
+      const moreContainer = document.getElementById('moreProjects')?.querySelector('.row');
+      if (moreContainer && projects.length > 3) {
+        moreContainer.innerHTML = '';
+        projects.slice(3).forEach(project => {
+          moreContainer.innerHTML += createProjectCard(project);
+        });
+        if (toggleContainer) toggleContainer.style.display = 'block';
+      }
+
+      console.log('Portfolio loaded from Firebase:', projects.length, 'projects');
     } catch(error) {
       console.error('Error loading Firebase data:', error);
+      const grid = document.getElementById('portfolioGrid');
+      grid.innerHTML = '<div class="col-12"><div class="alert alert-danger text-center">데이터 로딩 실패. 나중에 다시 시도해주세요.</div></div>';
     }
+  }
+
+  // Create project card HTML
+  function createProjectCard(project) {
+    return `
+      <div class="col-md-4 portfolio-card">
+        <div class="portfolio-image-container">
+          <img src="${project.image || './images/IMG_4242.JPG'}" alt="${project.title}" loading="lazy">
+          <div class="portfolio-overlay">
+            <i class="bi bi-eye"></i>
+          </div>
+        </div>
+        <div class="portfolio-info">
+          <h5>${project.title}</h5>
+          <p class="text-muted">${project.description}</p>
+        </div>
+      </div>
+    `;
   }
 
   // Load on page ready
@@ -962,3 +943,18 @@ Here's the complete **index.html** with Firebase integration:
 </html>
 </anArtifact>
 
+Perfect! **Download this index.html** and replace your current one.
+
+## What's New:
+✅ **Reads projects from Firebase** - `projects` collection
+✅ **Reads settings from Firebase** - `settings` collection
+✅ **Shows only visible projects** - filters `visible: true`
+✅ **Real-time updates** - when you add/edit projects in admin panel, they show on website
+✅ **Loading spinner** - while data loads
+✅ **Error handling** - shows error if Firebase fails
+
+Now:
+1. Replace your `index.html` with this file
+2. Push to GitHub
+3. Wait for Netlify to deploy
+4. Visit your website - you should see the projects you added in admin panel! 🎉
